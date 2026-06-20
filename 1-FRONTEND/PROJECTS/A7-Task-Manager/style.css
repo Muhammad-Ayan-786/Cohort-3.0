@@ -1,0 +1,587 @@
+/* =========================================================
+  RESET
+========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   THEME VARIABLES
+   data-theme="light" (default) and data-theme="dark" live on
+   <html>. JS will flip this attribute with setAttribute().
+========================================================= */
+html[data-theme="light"] {
+  --bg: #f3f4f8;
+  --surface: #ffffff;
+  --surface-muted: #f6f7fb;
+  --border: #e3e5ee;
+  --text: #1c1e2a;
+  --text-muted: #6b7080;
+  --text-faint: #9ca0b0;
+
+  --primary: #6366f1;
+  --primary-hover: #4f52d6;
+  --primary-soft: #eef0ff;
+
+  --success: #16a34a;
+  --success-soft: #e8f8ee;
+  --danger: #e2483d;
+  --danger-soft: #fdecea;
+  --warning: #d97706;
+  --warning-soft: #fdf2e3;
+
+  --shadow: 0 1px 2px rgba(20, 22, 40, 0.04), 0 6px 16px rgba(20, 22, 40, 0.06);
+}
+
+html[data-theme="dark"] {
+  --bg: #14151f;
+  --surface: #1c1e2b;
+  --surface-muted: #20222f;
+  --border: #2c2e3e;
+  --text: #eef0f6;
+  --text-muted: #a3a7b8;
+  --text-faint: #6f7385;
+
+  --primary: #818cf8;
+  --primary-hover: #9aa3fb;
+  --primary-soft: #2a2c47;
+
+  --success: #4ade80;
+  --success-soft: #16321f;
+  --danger: #f87171;
+  --danger-soft: #3a1f1f;
+  --warning: #fbbf24;
+  --warning-soft: #3a2c12;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================================================
+  BASE
+========================================================= */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.app {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+h1,
+h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 17px;
+}
+
+/* =========================================================
+  HEADER
+========================================================= */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.brand-subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* Theme toggle switch */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.theme-toggle-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 60px;
+  height: 32px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.theme-toggle-icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  color: var(--primary-hover);
+  z-index: 1;
+}
+
+.theme-toggle-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+/* When JS sets data-theme="dark" on the toggle button itself,
+   slide the thumb to the right. */
+.theme-toggle[data-theme="dark"] .theme-toggle-thumb {
+  transform: translateX(28px);
+}
+
+/* =========================================================
+  SHARED CARD SURFACE
+========================================================= */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
+}
+
+/* =========================================================
+  TASK FORM
+========================================================= */
+.task-form-section {
+  margin-bottom: 36px;
+}
+
+.task-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.task-title-input,
+.task-category-select {
+  font-family: inherit;
+  font-size: 14.5px;
+  color: var(--text);
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-title-input {
+  flex: 1 1 220px;
+}
+
+.task-category-select {
+  flex: 0 0 150px;
+  cursor: pointer;
+}
+
+.task-title-input:focus,
+.task-category-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease, transform 0.05s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+/* =========================================================
+  TASK LIST
+========================================================= */
+.task-list-section {
+  margin-bottom: 36px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.task-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.section-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 14px;
+  padding: 28px 0;
+}
+
+/* Hide the empty-state message with the "hidden" attribute via JS
+   once tasks exist, e.g. emptyState.setAttribute("hidden", ""); */
+[hidden] {
+  display: none !important;
+}
+
+/* =========================================================
+   TASK CARD
+   Styling keys off the custom data attributes directly, so the
+   same card markup reacts automatically once JS sets/changes
+   data-status or data-category.
+========================================================= */
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-1px);
+}
+
+.task-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.task-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+/* Category colors driven by data-category on the parent card */
+.task-card[data-category="work"] .badge-category {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.task-card[data-category="personal"] .badge-category {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.task-card[data-category="urgent"] .badge-category {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.task-card[data-category="other"] .badge-category {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+/* Status styling driven by data-status on the parent card */
+.task-card[data-status="completed"] .task-title {
+  text-decoration: line-through;
+  color: var(--text-faint);
+}
+
+.task-card[data-status="completed"] .badge-status {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.task-card[data-status="pending"] .badge-status {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.task-card[data-status="completed"] .complete-btn {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1.35px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.edit-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.complete-btn:hover {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.delete-btn:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* =========================================================
+  EVENT PROPAGATION DEMO
+========================================================= */
+.propagation-section {
+  margin-bottom: 36px;
+}
+
+.prop-box {
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.prop-grandparent {
+  background: var(--primary-soft);
+  color: var(--primary);
+  padding: 28px;
+}
+
+.prop-parent {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 24px;
+  margin-top: 12px;
+}
+
+.prop-child {
+  font-family: inherit;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.prop-child:hover {
+  background: var(--primary-hover);
+}
+
+.prop-child:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+  RENDERING PIPELINE DIAGRAM
+========================================================= */
+.pipeline-section {
+  margin-bottom: 16px;
+}
+
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pipeline-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pipeline-box {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+
+.pipeline-box-label {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pipeline-box-dom,
+.pipeline-box-cssom {
+  border-color: var(--primary);
+}
+
+.pipeline-box-final {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.pipeline-box-final .pipeline-box-label {
+  color: #ffffff;
+}
+
+.pipeline-arrow {
+  color: var(--text-faint);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.pipeline-arrow-down {
+  font-size: 20px;
+}
+
+/* =========================================================
+  RESPONSIVE
+========================================================= */
+@media (max-width: 560px) {
+  .app {
+    padding: 32px 16px 64px;
+  }
+
+  .task-form {
+    flex-direction: column;
+  }
+
+  .task-category-select {
+    flex: 1;
+  }
+
+  .task-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-actions {
+    align-self: flex-end;
+  }
+}
+
+/* =========================================================
+  Custom Scroll-bar
+========================================================= */
+:root {
+  /* Scrollbar size */
+  --scrollbar-size: 4.5px;
+  --scrollbar-radius: 999px;
+
+  /* Track */
+  /* --scrollbar-track: #0b0c10; */
+  --scrollbar-track: var(--surface-muted);
+
+  /* Thumb (main accent colors) */
+  --scrollbar-thumb: linear-gradient(180deg,
+      var(--primary),
+      var(--primary-soft));
+
+  /* Effects */
+  --scrollbar-shadow: 0 3px 8px rgba(0, 0, 0, 0.45);
+}
+
+/* Base */
+::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+  box-shadow: var(--scrollbar-shadow);
+}

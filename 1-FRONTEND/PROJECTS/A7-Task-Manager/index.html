@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- ===================== HEADER + THEME TOGGLE ===================== -->
+    <header class="app-header">
+      <div class="brand">
+        <h1>Task Manager</h1>
+        <p class="brand-subtitle">Stay on top of what matters</p>
+      </div>
+
+      <button id="themeToggle" type="button" class="theme-toggle" aria-label="Toggle dark mode" data-theme="light">
+        <span class="theme-toggle-track">
+          <!-- Light mode icon -->
+          <span class="theme-toggle-icon icon-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+          </span>
+          <!-- Dark mode icon -->
+          <span class="theme-toggle-icon icon-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </span>
+          <!-- Theme toggle thumb -->
+          <span class="theme-toggle-thumb"></span>
+        </span>
+      </button>
+    </header>
+
+
+
+
+    <!-- ===================== TASK CREATION MODULE ===================== -->
+    <section class="card task-form-section" aria-label="Create a new task">
+      <form id="taskForm" class="task-form">
+        <input type="text" id="taskTitleInput" name="taskTitle" class="task-title-input"
+          placeholder="What needs to be done?" autocomplete="off" />
+
+        <select id="taskCategorySelect" name="taskCategory" class="task-category-select">
+          <option value="personal">Personal</option>
+          <option value="work">Work</option>
+          <option value="urgent">Urgent</option>
+          <option value="other">Other</option>
+        </select>
+
+        <button type="submit" id="addTaskBtn" class="btn btn-primary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          <span>Add Task</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- ===================== TASK LIST ===================== -->
+    <section class="task-list-section" aria-label="Task list">
+      <div class="section-heading">
+        <h2>Your Tasks</h2>
+        <span id="taskCount" class="task-count"><span id="taskCounter">0</span> tasks</span>
+      </div>
+
+      <!-- Cards get created and appended here dynamically with JS.
+           Left empty on purpose. -->
+      <ul id="taskList" class="task-list"></ul>
+
+      <!-- Empty-state message. Show/hide this with JS (e.g. via the
+           "hidden" attribute) depending on whether taskList has children. -->
+      <p id="emptyState" class="empty-state">No tasks yet. Add your first one above.</p>
+    </section>
+
+
+
+    <!-- ===================== EVENT PROPAGATION DEMO ===================== -->
+    <section class="card propagation-section" aria-label="Event propagation demo">
+      <div class="section-heading">
+        <h2>Event Propagation Demo</h2>
+      </div>
+      <p class="section-note">Open the console, then click the button below.</p>
+
+      <div id="grandparent" class="prop-box prop-grandparent">
+        Grandparent
+        <div id="parent" class="prop-box prop-parent">
+          Parent
+          <button id="child" type="button" class="prop-box prop-child">
+            Child Button
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BROWSER RENDERING PIPELINE ===================== -->
+    <section class="card pipeline-section" aria-label="Browser rendering pipeline explainer">
+      <div class="section-heading">
+        <h2>Browser Rendering Pipeline</h2>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipeline-row">
+          <div class="pipeline-box">
+            <span class="pipeline-box-label">HTML</span>
+          </div>
+          <span class="pipeline-arrow">&#8594;</span>
+          <div class="pipeline-box">
+            <span class="pipeline-box-label">Parsing &amp; Tokenization</span>
+          </div>
+          <span class="pipeline-arrow">&#8594;</span>
+          <div class="pipeline-box pipeline-box-dom">
+            <span class="pipeline-box-label">DOM Tree</span>
+          </div>
+        </div>
+
+        <div class="pipeline-row">
+          <div class="pipeline-box">
+            <span class="pipeline-box-label">CSS</span>
+          </div>
+          <span class="pipeline-arrow">&#8594;</span>
+          <div class="pipeline-box pipeline-box-cssom">
+            <span class="pipeline-box-label">CSSOM Tree</span>
+          </div>
+        </div>
+
+        <span class="pipeline-arrow pipeline-arrow-down">&#8595;</span>
+
+        <div class="pipeline-row">
+          <div class="pipeline-box pipeline-box-final">
+            <span class="pipeline-box-label">Render Tree</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
