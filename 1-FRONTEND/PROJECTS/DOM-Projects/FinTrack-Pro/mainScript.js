@@ -57,7 +57,10 @@ const settingsForm = document.getElementById('settingsForm'); // Settings Form
 let transactions = JSON.parse(localStorage.getItem('transactions')) || []; // Transactions from Local Storage
 let userData = JSON.parse(localStorage.getItem('user')) || {}; // User Data from Local Storage
 let editTransaction = null;
+let chartInstance = null;
 
+
+/* Overview Cards ==========> */
 const overviewCardsInfo = () => {
   let balance = 0;
   let income = 0;
@@ -78,6 +81,8 @@ const overviewCardsInfo = () => {
 }
 
 
+
+/* Transactions History ==========> */
 const transactionsHistoryTiles = (data) => {
   transactionTableBody.innerHTML = ''
 
@@ -99,6 +104,9 @@ const transactionsHistoryTiles = (data) => {
   })
 }
 
+
+
+/* Edit & Delete ==========> */
 transactionTableBody.addEventListener("click", (e) => {
   const editBtn = e.target.closest(".btn-edit")
   const deleteBtn = e.target.closest(".btn-delete")
@@ -113,6 +121,7 @@ transactionTableBody.addEventListener("click", (e) => {
 
     transactionsHistoryTiles(transactions)
     overviewCardsInfo()
+    renderChart()
   }
 
   if (editBtn) {
@@ -133,6 +142,8 @@ transactionTableBody.addEventListener("click", (e) => {
 })
 
 
+
+/* Search and Filter ==========> */
 searchInput.addEventListener('input', () => {
   let filtered = transactions.filter((tran) => {
     return tran.description.toLowerCase().includes(searchInput.value.toLowerCase())
@@ -154,12 +165,16 @@ typeFilter.addEventListener('change', (e) => {
 })
 
 
+
+/* Chart ==========> */
 const renderChart = () => {
+  if (chartInstance) chartInstance.destroy()
+
   let allTranDates = transactions.map(tran => tran.date)
   let allTranIncomes = transactions.map(tran => tran.type === 'income' ? tran.amount : 0)
   let allTranExpences = transactions.map(tran => tran.type === 'expense' ? tran.amount : 0)
 
-  new Chart(cashFlowChart, {
+  chartInstance = new Chart(cashFlowChart, {
     type: 'bar',
     data: {
       labels: allTranDates,  // dates go here
@@ -180,11 +195,14 @@ const renderChart = () => {
 }
 
 
+
+/* Initial Render ==========> */
 transactionsHistoryTiles(transactions)
 overviewCardsInfo()
 renderChart()
 
 
+/* Adding New Transaction ==========> */
 transactionForm.addEventListener('submit', (e) => {
   e.preventDefault()
 
@@ -223,6 +241,7 @@ transactionForm.addEventListener('submit', (e) => {
 
   transactionsHistoryTiles(transactions)
   overviewCardsInfo()
+  renderChart()
 
   transactionForm.reset()
   transactionModal.classList.remove('active')
@@ -230,13 +249,28 @@ transactionForm.addEventListener('submit', (e) => {
 
 
 
+/* Open Add Modal ==========> */
 openAddModalBtn.addEventListener('click', () => {
   transactionModal.classList.add('active')
 })
 
+/* Close Modal ==========> */
 closeModal.addEventListener('click', () => {
   transactionModal.classList.remove('active')
 })
+
+
+
+/* Reset Data ==========> */
+resetDataBtn.addEventListener('click', () => {
+  console.log('He');
+  transactions = []
+  localStorage.setItem("transactions", JSON.stringify(transactions))
+  transactionsHistoryTiles(transactions)
+  overviewCardsInfo()
+  renderChart()
+})
+
 
 
 /* Dynamic Content on Load ==========> */
@@ -244,6 +278,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
   topbarName.innerText = userData.username
   settingName.value = userData.username
 })
+
 
 
 /* Navigation Menu Functionality ==========> */
@@ -267,6 +302,7 @@ navMenu.addEventListener("click", (e) => {
     settingsView.classList.add("active")
   }
 })
+
 
 
 /* Settings Form Functionality ==========> */
@@ -295,6 +331,7 @@ settingsForm.addEventListener('submit', (e) => {
 })
 
 
+
 /* Dark Mode Functionality ==========> */
 let isDark = JSON.parse(localStorage.getItem("theme")) || false
 
@@ -316,6 +353,7 @@ darkModeToggle.addEventListener("change", (e) => {
     localStorage.setItem("theme", false)
   }
 })
+
 
 
 /* Logout Functionality ==========> */
