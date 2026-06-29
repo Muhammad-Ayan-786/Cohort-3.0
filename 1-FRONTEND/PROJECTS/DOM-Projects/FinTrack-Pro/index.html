@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fin Track Pro</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- Authentication Section -->
+  <section id="authentication">
+    <!-- Login Card -->
+    <div class=" auth-card" id="loginCard">
+      <h2>Welcome Back</h2>
+      <p>Login to FinTrack Pro</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginUsername">Username</label>
+          <input type="text" id="loginUsername" required="">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required="">
+        </div>
+        <button type="submit" id="loginBtn" style="background: #0056b3;">Login</button>
+      </form>
+      <p style="margin-top: 15px; font-size: 14px;">
+        Don't have an account? <a id="registerLink" href="#">Register here</a>
+      </p>
+    </div>
+
+    <!-- Register Card -->
+    <div class="auth-card" id="registerCard" hidden>
+      <h2>Create Account</h2>
+      <p>Join FinTrack Pro</p>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="regUsername">Choose a Username</label>
+          <input type="text" id="regUsername" required="">
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <input type="password" id="regPassword" required="">
+        </div>
+        <button type="submit" id="registerBtn" style="background: #28a745;">Register</button>
+      </form>
+      <p style="margin-top: 15px; font-size: 14px;">
+        Already have an account? <a id="loginLink" href="#">Login here</a>
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- Daskboard Pannel -->
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Logo -->
+      <div class="logo">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+          <h2>FinTrack Pro</h2>
+          <p>Enterprise Finance</p>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-target="dashboard-view" id="dashboardViewLink">
+          <i class="fa-solid fa-border-all"></i>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item" data-target="settings-view" id="settingsViewLink">
+          <i class="fa-solid fa-gear"></i>
+          Settings
+        </a>
+      </nav>
+
+      <!-- Add Transaction Button -->
+      <button class="add-btn" id="openAddModalBtn">
+        <i class="fa-solid fa-plus"></i> Add Transaction
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="user-actions" style="display: flex; align-items: center;">
+          <div class="user-profile">
+            <div class="user-info">
+              <span class="name" id="topbarName">Name</span>
+            </div>
+          </div>
+
+          <button id="logoutBtn"
+            style="margin-left: 20px; padding: 8px 16px; border: 1px solid #ccc; border-radius: 6px; background: #ffabab; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; font-weight: 500; color: white;">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+
+
+
+
+
+
+
+      <!-- Dashboard View -->
+      <div id="dashboard-view" class="view-section active">
+        <div class="page-header">
+          <div>
+            <h1>Financial Overview</h1>
+            <p>Real-time tracking application</p>
+          </div>
+        </div>
+
+        <!-- Overview Cards -->
+        <div class="overview-cards">
+          <div class="card">
+            <div class="card-icon bg-blue"><i class="fa-solid fa-building-columns"></i></div>
+            <p>Current Balance</p>
+            <h3 id="displayBalance">$0.00</h3>
+          </div>
+          <div class="card">
+            <div class="card-icon bg-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <p>Total Income</p>
+            <h3 id="displayIncome" class="text-green">$0.00</h3>
+          </div>
+          <div class="card">
+            <div class="card-icon bg-red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+            <p>Total Expense</p>
+            <h3 id="displayExpense" class="text-red">$0.00</h3>
+          </div>
+          <div class="card">
+            <div class="card-icon bg-blue"><i class="fa-solid fa-piggy-bank"></i></div>
+            <p>Total Transactions</p>
+            <h3 id="displayCount">0</h3>
+          </div>
+        </div>
+
+
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+
+          <!-- Graph & Transaction Table -->
+          <div class="main-column">
+            <!-- Cash Flow Chart -->
+            <div class="card chart-card" style="margin-bottom: 20px;">
+              <div class="card-header">
+                <h3>Cash Flow Analysis</h3>
+              </div>
+
+              <div class="chart-area" style="height: 250px; position: relative;">
+                <canvas id="cashFlowChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Transaction History Table -->
+            <div class="card table-card">
+              <div class="card-header">
+                <h3>All Transactions</h3>
+              </div>
+
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <!-- Search Bar -->
+                <div class="search-bar">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="searchInput" placeholder="Search transactions...">
+                </div>
+
+                <!-- Filter -->
+                <select id="typeFilter"
+                  style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-main); color: var(--text-dark); cursor: pointer; outline: none;">
+                  <option value="all">All Types</option>
+                  <option value="income">Income Only</option>
+                  <option value="expense">Expense Only</option>
+                </select>
+              </div>
+
+              <!-- Transaction Tiles -->
+              <div style="overflow-x: auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>DATE</th>
+                      <th>DESCRIPTION</th>
+                      <th>CATEGORY</th>
+                      <th>AMOUNT</th>
+                      <th>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody id="transactionTableBody">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Theme Settings -->
+          <div class="side-column">
+            <div class="card">
+              <div class="card-header">
+                <h3>Preferences</h3>
+              </div>
+              <div class="preference-item">
+                <div>
+                  <h4>Dark Mode</h4>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="darkModeToggle">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <button id="resetDataBtn" class="btn-outline full-width text-red mt-1"
+                style="border-color: #ffcccc; background: #fff5f5;">
+                <i class="fa-solid fa-trash"></i> Reset All Data
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- Settings View Page -->
+      <div id="settings-view" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1>Settings</h1>
+            <p>Manage your account profile and app formatting.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="main-column">
+            <div class="card">
+              <div class="card-header">
+                <h3>Profile Details</h3>
+              </div>
+              <!-- Settings Form -->
+              <form id="settingsForm" style="margin-top: 10px;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="settingName">Full Name</label>
+                    <input type="text" id="settingName" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Primary Currency</label>
+                    <select id="settingCurrency" required>
+                      <option value="$">USD ($)</option>
+                      <option value="€">EUR (€)</option>
+                      <option value="£">GBP (£)</option>
+                      <option value="R">ZAR (R)</option>
+                      <option value="₨">PAK (₨)</option>
+                      <option value="₹">INR (₹)</option>
+                      <option value="¥">JPY (¥)</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" id="saveSettings" class="btn-primary mt-1">Save Changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Transaction Modal -->
+  <div id="transactionModal" class="modal">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Transaction</h3>
+        <span class="close-modal">&times;</span>
+      </div>
+
+      <!-- Form of Transaction Modal -->
+      <form id="transactionForm">
+        <input type="hidden" id="txId">
+
+        <!-- Transaction Type Selection -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="txType">Type</label>
+          <select id="txType" required>
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+        </div>
+
+        <!-- Transaction Description -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="txDescription">Description</label>
+          <input type="text" id="txDescription" placeholder="e.g. Amazon, Salary, Coffee" required
+            style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+        </div>
+
+        <!-- Amount and Date -->
+        <div class="form-row" style="margin-bottom: 12px;">
+          <!-- Amount -->
+          <div class="form-group">
+            <label for="txAmount">Amount</label>
+            <input type="number" id="txAmount" step="0.01" min="0" required
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+          </div>
+          <!-- Date -->
+          <div class="form-group">
+            <label for="txDate">Date</label>
+            <input type="date" id="txDate" required
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px;">
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="txCategory">Category</label>
+          <select id="txCategory" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="Food & Dining">Food & Dining</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Recharge & Bills">Recharge & Bills</option>
+            <option value="Petrol & Auto">Petrol & Auto</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Salary">Salary</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Summit Btn -->
+        <button type="submit" id="saveFrom" class="btn-primary full-width mt-1">Save Transaction</button>
+      </form>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="authScript.js"></script>
+  <script src="mainScript.js"></script>
+
+</body>
+
+</html>
