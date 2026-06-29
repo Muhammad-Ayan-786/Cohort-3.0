@@ -158,9 +158,6 @@ const renderChart = () => {
   let allTranDates = transactions.map(tran => tran.date)
   let allTranIncomes = transactions.map(tran => tran.type === 'income' ? tran.amount : 0)
   let allTranExpences = transactions.map(tran => tran.type === 'expense' ? tran.amount : 0)
-  console.log(allTranDates)
-  console.log(allTranIncomes);
-  console.log(allTranExpences);
 
   new Chart(cashFlowChart, {
     type: 'bar',
