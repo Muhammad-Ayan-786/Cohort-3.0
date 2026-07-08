@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Hub</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="https://cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ============ DASHBOARD (HOME) SCREEN — visible by default ============ -->
+  <section id="dashboard-screen" class="screen">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand">Focus Hub</div>
+        <span class="divider">|</span>
+        <span id="live-time" class="live-time"></span>
+        <span id="live-date" class="live-date"></span>
+      </div>
+      <div class="topbar-icons">
+        <button class="icon-btn" id="theme-toggle-btn" title="Toggle theme">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button>
+        <button class="icon-btn" title="Toggle theme">
+          <a href="https://github.com/Muhammad-Ayan-786/Cohort-3.0/tree/main/1-FRONTEND/PROJECTS" target="_blank">
+            <i class="fa fa-github" style="font-size: 20px;"></i>
+          </a>
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <h1 class="greeting">Good Morning, Sir.</h1>
+      <p class="subtext">
+        Your cognitive load is light today. You have 3 primary goals focused on your deep work sessions.
+      </p>
+
+      <div class="grid-2">
+        <div class="card nav-card" data-target="todo-screen">
+          <div class="card-top">
+            <div class="icon-circle purple"><span class="material-symbols-outlined">task_alt</span></div>
+            <span class="tag" id="card-todo-count"></span>
+          </div>
+          <h3>Todo List</h3>
+          <p>Stay on top of your daily actions.</p>
+        </div>
+
+        <div class="card nav-card" data-target="planner-screen">
+          <div class="card-top">
+            <div class="icon-circle purple"><span class="material-symbols-outlined">event_note</span></div>
+          </div>
+          <h3>Daily Planner</h3>
+          <p>Your upcoming schedule and meeting syncs.</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card quote-card nav-card" data-target="motivation-screen">
+          <span class="material-symbols-outlined">format_quote</span>
+          <br>
+          <br>
+          <p class="quote-text" style="color: white;">
+            "Focus is a matter of deciding what things you're not going to do."
+          </p>
+          <span class="quote-author">— Motivation Quote</span>
+        </div>
+
+        <div class="card center-card nav-card" data-target="pomodoro-screen">
+          <div class="ring-icon"><span class="material-symbols-outlined">timer</span></div>
+          <h3>Pomodoro Timer</h3>
+          <p>25:00 Session</p>
+        </div>
+
+        <div class="card weather-mini-card nav-card" data-target="weather-screen">
+          <div class="weather-mini-top">
+            <span class="big-temp" id="card-temp"></span>
+            <img id="card-temp-icon">
+          </div>
+          <p class="condition" id="card-temp-condition"></p>
+          <h4></h4>
+          <p class="muted" id="card-temp-location"></p>
+        </div>
+      </div>
+
+      <div class="card goals-bar nav-card" data-target="goals-screen">
+        <div class="goals-bar-left">
+          <div class="icon-circle peach"><span class="material-symbols-outlined">flag</span></div>
+          <div>
+            <h3>Daily Goals</h3>
+            <p>Focus on 1% improvement every single day.</p>
+          </div>
+        </div>
+        <div class="goals-bar-right">
+          <span class="completion-label">COMPLETION</span>
+          <div class="progress-track small">
+            <div class="progress-fill" id="card-goals-bar"></div>
+          </div>
+          <span class="big-percent" id="card-goals-percent"></span>
+        </div>
+      </div>
+    </main>
+
+  </section>
+
+
+  <!-- ============ TODO LIST SCREEN ============ -->
+  <section id="todo-screen" class="screen feature-screen">
+    <header class="feature-header">
+      <button class="back-btn" data-target="dashboard-screen"><span class="material-symbols-outlined">arrow_back</span>
+        Dashboard</button>
+      <div class="brand center-brand">Focus Hub</div>
+      <div class="topbar-icons">
+        <button class="icon-btn"><span class="material-symbols-outlined">dark_mode</span></button>
+      </div>
+    </header>
+
+    <main class="feature-main narrow">
+      <h1>Todo List</h1>
+      <p class="subtext">Manage your tasks and maintain cognitive clarity.</p>
+
+      <div class="card input-row">
+        <input type="text" id="todo-input" placeholder="What needs to be done?">
+        <button class="btn-primary" id="add-todo-btn">
+          <span class="material-symbols-outlined btn-icon">add</span> Add Task
+        </button>
+      </div>
+
+      <ul class="task-list" id="todo-list"></ul>
+
+      <div class="grid-3">
+        <div class="card stat-card soft">
+          <span class="stat-label">COMPLETED</span>
+          <div class="stat-value purple-text">
+            <span id="completed-tasks"></span>
+            <span class="stat-unit">tasks</span>
+          </div>
+        </div>
+        <div class="card stat-card soft">
+          <span class="stat-label">ACTIVE</span>
+          <div class="stat-value purple-text">
+            <span id="active-tasks"></span>
+            <span class="stat-unit">tasks</span>
+          </div>
+        </div>
+        <div class="card stat-card soft">
+          <span class="stat-label">FOCUS SCORE</span>
+          <div class="stat-value orange-text" id="focus-score">92% <i class="fa-solid fa-arrow-trend-up"></i></div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+
+  <!-- ============ DAILY PLANNER SCREEN ============ -->
+  <section id="planner-screen" class="screen feature-screen active-screen">
+    <header class="feature-header planner-header">
+      <div class="planner-header-left">
+        <button class="back-btn" data-target="dashboard-screen"><span
+            class="material-symbols-outlined">arrow_back</span></button>
+        <div>
+          <strong>Daily Planner</strong>
+          <p class="muted small">
+            FOCUS HUB • <span id="current-date">THURSDAY, OCT 24</span>
+          </p>
+        </div>
+      </div>
+      <button class="btn-primary" id="reset-planner-btn">
+        <span class="material-symbols-outlined btn-icon">refresh</span> RESET
+      </button>
+    </header>
+
+    <main class="feature-main narrow">
+      <div class="card planner-table">
+        <div class="planner-row planner-row-head">
+          <span>TIME</span><span>TASKS &amp; DEEP WORK NOTES</span>
+        </div>
+        <div class="planner-row" data-time="5:00 AM">
+          <span>5:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="6:00 AM">
+          <span>6:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="7:00 AM">
+          <span>7:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="8:00 AM">
+          <span>8:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="9:00 AM">
+          <span>9:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="10:00 AM">
+          <span>10:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="11:00 AM">
+          <span>11:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="12:00 AM">
+          <span>12:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="1:00 PM">
+          <span>1:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="2:00 PM">
+          <span>2:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="3:00 PM">
+          <span>3:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="4:00 PM">
+          <span>4:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="5:00 PM">
+          <span>5:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="6:00 PM">
+          <span>6:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="7:00 PM">
+          <span>7:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="8:00 PM">
+          <span>8:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="9:00 PM">
+          <span>9:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="10:00 PM">
+          <span>10:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="11:00 PM">
+          <span>11:00 PM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="12:00 AM">
+          <span>12:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="1:00 AM">
+          <span>1:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="2:00 AM">
+          <span>2:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="3:00 AM">
+          <span>3:00 AM</span><input placeholder="Add task or note...">
+        </div>
+        <div class="planner-row" data-time="4:00 AM">
+          <span>4:00 AM</span><input placeholder="Add task or note...">
+        </div>
+      </div>
+    </main>
+  </section>
+
+
+  <!-- ============ MOTIVATION QUOTE SCREEN ============ -->
+  <section id="motivation-screen" class="screen feature-screen">
+    <header class="feature-header">
+      <button class="back-btn" data-target="dashboard-screen"><span class="material-symbols-outlined">arrow_back</span>
+        Back to Dashboard</button>
+      <div class="brand center-brand light">Focus Hub</div>
+      <div></div>
+    </header>
+
+    <main class="feature-main centered-main">
+      <div class="card quote-big-card">
+        <div class="quote-mark circle-mark">
+          <span class="material-symbols-outlined">format_quote</span>
+        </div>
+        <h2 id="quote-text"></h2>
+        <span class="quote-author-caps" id="quote-author"></span>
+      </div>
+      <button class="btn-primary large" id="new-quote-btn">
+        <span class="material-symbols-outlined btn-icon">refresh</span> New Quote
+      </button>
+    </main>
+  </section>
+
+
+  <!-- ============ POMODORO TIMER SCREEN ============ -->
+  <section id="pomodoro-screen" class="screen feature-screen">
+    <header class="feature-header">
+      <button class="back-btn" data-target="dashboard-screen"><span class="material-symbols-outlined">arrow_back</span>
+        Dashboard</button>
+      <div></div>
+      <div class="topbar-icons">
+        <button class="icon-btn"><span class="material-symbols-outlined">dark_mode</span></button>
+      </div>
+    </header>
+
+    <main class="feature-main centered-main">
+      <span class="eyebrow">FOCUS HUB</span>
+      <h1>Work Session</h1>
+
+      <div class="timer-circle">
+        <span id="timer-display"></span>
+        <p>Minutes Remaining</p>
+      </div>
+
+      <div class="timer-controls">
+        <button class="icon-btn round" id="reset-btn">
+          <span class="material-symbols-outlined">restart_alt</span>
+        </button>
+        <button class="icon-btn round primary big" id="start-pause-btn">
+          <span class="material-symbols-outlined">play_arrow</span>
+        </button>
+        <button class="icon-btn round" id="alert-btn">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+      </div>
+
+      <div class="pill-row">
+        <span class="pill"><span class="material-symbols-outlined btn-icon">local_fire_department</span> Daily Goal:
+          4/8</span>
+        <span class="pill"><span class="material-symbols-outlined btn-icon">psychology</span> Deep Work Mode</span>
+      </div>
+    </main>
+  </section>
+
+
+  <!-- ============ DAILY GOALS SCREEN ============ -->
+  <section id="goals-screen" class="screen feature-screen">
+    <!-- <header class="feature-header simple-header"> -->
+    <header class="feature-header">
+      <button class="back-btn" data-target="dashboard-screen">
+        <span class="material-symbols-outlined">arrow_back</span> Back to Dashboard
+      </button>
+      <button class="btn-primary" id="reset-goals-btn"><span class="material-symbols-outlined btn-icon">refresh</span>
+        RESET</button>
+    </header>
+
+    <main class="feature-main narrow">
+      <div class="goals-title-row">
+        <div>
+          <h1>Daily Goals</h1>
+          <p class="subtext">Stay focused, one task at a time.</p>
+        </div>
+        <div class="goals-count" id="goals-count">
+          <strong></strong>
+          <span class="muted small">completed</span>
+        </div>
+      </div>
+
+      <div class="progress-track wide">
+        <div class="progress-fill" id="goals-bar"></div>
+      </div>
+
+      <div class="card input-row">
+        <input type="text" id="goal-input" placeholder="What's your next focus goal?">
+        <button class="btn-primary" id="add-goal-btn">Add Goal</button>
+      </div>
+
+      <p class="section-label">TODAY'S FOCUS</p>
+
+      <ul class="task-list" id="goals-list"></ul>
+
+      <div class="banner-card">
+        <h3>Almost there!</h3>
+        <p id="goals-banner-text"></p>
+      </div>
+    </main>
+  </section>
+
+
+  <!-- ============ WEATHER SCREEN ============ -->
+  <section id="weather-screen" class="screen feature-screen">
+    <header class="feature-header">
+      <button class="back-btn" data-target="dashboard-screen"><span class="material-symbols-outlined">arrow_back</span>
+        Back to Focus</button>
+      <div></div>
+      <div class="topbar-icons">
+        <input class="search-btn" id="location-input" type="text" placeholder="Enter Location">
+        <button class="search-btn" id="search-btn">Submit</button>
+      </div>
+    </header>
+
+    <main class="feature-main">
+      <div class="grid-weather-top">
+        <div class="card weather-main-card">
+          <p class="location-line" id="location-name">
+            <span class="material-symbols-outlined btn-icon">location_on</span>
+            <strong></strong>
+          </p>
+          <p class="muted small" id="location-time"></p>
+          <div class="weather-big-row">
+            <span class="big-temp huge" id="current-temp"></span>
+            <img id="current-icon" class="weather-icon-big">
+          </div>
+          <p id="current-condition">Partly Cloudy</p>
+          <p class="muted small" id="current-range"></p>
+        </div>
+
+        <div class="weather-side">
+          <div class="card stat-card">
+            <span class="stat-label"><span class="material-symbols-outlined btn-icon">air</span> AIR QUALITY</span>
+            <h3 id="current-aqi"></h3>
+            <div class="progress-track wide">
+              <div class="progress-fill" style="width:0%" id="aqi-bar"></div>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <span class="stat-label"><span class="material-symbols-outlined btn-icon">wb_sunny</span> UV INDEX</span>
+            <h3 id="current-uv"></h3>
+            <div class="progress-track wide">
+              <div class="progress-fill purple" style="width:0%" id="uv-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card stat-card">
+          <span class="stat-label"><span class="material-symbols-outlined btn-icon">water_drop</span> HUMIDITY</span>
+          <h3 id="current-humidity"></h3>
+          <p class="muted small">The dew point is 52° right now.</p>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label"><span class="material-symbols-outlined btn-icon">air</span> WIND</span>
+          <h3 id="current-wind"></h3>
+          <p class="muted small">Light breeze from North West.</p>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label"><span class="material-symbols-outlined btn-icon">visibility</span> VISIBILITY</span>
+          <h3 id="current-visibility"></h3>
+          <p class="muted small">Clear visibility for safe driving.</p>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label"><span class="material-symbols-outlined btn-icon">speed</span> PRESSURE</span>
+          <h3 id="current-pressure"></h3>
+          <p class="muted small">Barometric pressure is stable.</p>
+        </div>
+      </div>
+
+      <div class="card forecast-card">
+        <div class="insight-header">
+          <h3>24-Hour Forecast</h3>
+        </div>
+        <div class="forecast-row" id="forecast-row"></div>
+      </div>
+
+      <!-- <div class="card map-placeholder">
+        <span class="map-chip"><span class="material-symbols-outlined btn-icon">location_on</span> Precipitation
+          Map</span>
+        <p class="muted">Map preview goes here</p>
+      </div> -->
+    </main>
+  </section>
+
+  <script type="module" src="script.js"></script>
+</body>
+
+</html>
