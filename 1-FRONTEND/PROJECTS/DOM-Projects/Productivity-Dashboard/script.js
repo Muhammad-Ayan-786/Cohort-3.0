@@ -5,7 +5,6 @@ let body = document.body
 let allScreens = Array.from(document.querySelectorAll(".screen"));  // All Screens
 
 
-
 /* Get Full Date & Time Function (Global Function) */
 const dateClass = () => {
   return {
@@ -67,6 +66,24 @@ const dateClass = () => {
 }
 
 
+/* Toggle Theme Function (Global Function) */
+const toggleTheme = (listener) => {
+  let theme = JSON.parse(localStorage.getItem('theme')) || false
+  theme ?
+    body.classList.add('dark-theme') :
+    body.classList.remove('dark-theme')
+
+  listener.addEventListener("click", () => {
+    body.classList.toggle('dark-theme')
+
+    localStorage.setItem("theme", false)
+
+    if (body.classList.contains('dark-theme')) {
+      localStorage.setItem("theme", true)
+    }
+  })
+}
+
 
 /* Home Page which shows everything in cards */
 function homePage() {
@@ -78,24 +95,7 @@ function homePage() {
   const themeToggleBtn = document.getElementById("theme-toggle-btn");
   let navScreenCard = document.querySelectorAll('.nav-card, .back-btn');
 
-  // Toggle Theme Function
-  const toggleTheme = () => {
-    let theme = JSON.parse(localStorage.getItem('theme')) || false
-    theme ?
-      body.classList.add('dark-theme') :
-      body.classList.remove('dark-theme')
-
-    themeToggleBtn.addEventListener("click", () => {
-      body.classList.toggle('dark-theme')
-
-      localStorage.setItem("theme", false)
-
-      if (body.classList.contains('dark-theme')) {
-        localStorage.setItem("theme", true)
-      }
-    })
-  }
-  toggleTheme()
+  toggleTheme(themeToggleBtn)
 
   // Navigation to Different Screens
   navScreenCard.forEach(card => {
@@ -128,6 +128,8 @@ function todoPage() {
   const completedTasks = document.getElementById("completed-tasks");
   const activeTasks = document.getElementById("active-tasks");
   const focusScore = document.getElementById("focus-score");
+
+  toggleTheme(document.getElementById("toggle-theme-todo"))
 
   let todoArr = JSON.parse(localStorage.getItem("todoArr")) || []
 
@@ -379,6 +381,8 @@ function pomodoroPage() {
   const notifyBtn = document.getElementById("alert-btn");
 
   let togglePauseBtn = startBtn.firstElementChild;
+
+  toggleTheme(document.getElementById("toggle-theme-pomodoro"))
 
   let totalMinutes = 25 * 60
   let pomodoroInterval = null

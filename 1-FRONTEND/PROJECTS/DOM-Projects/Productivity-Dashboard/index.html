@@ -16,7 +16,7 @@
 <body>
 
   <!-- ============ DASHBOARD (HOME) SCREEN — visible by default ============ -->
-  <section id="dashboard-screen" class="screen">
+  <section id="dashboard-screen" class="screen active-screen">
     <header class="topbar">
       <div class="topbar-left">
         <div class="brand">Focus Hub</div>
@@ -117,7 +117,9 @@
         Dashboard</button>
       <div class="brand center-brand">Focus Hub</div>
       <div class="topbar-icons">
-        <button class="icon-btn"><span class="material-symbols-outlined">dark_mode</span></button>
+        <button class="icon-btn" id="toggle-theme-todo">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button>
       </div>
     </header>
 
@@ -159,7 +161,7 @@
 
 
   <!-- ============ DAILY PLANNER SCREEN ============ -->
-  <section id="planner-screen" class="screen feature-screen active-screen">
+  <section id="planner-screen" class="screen feature-screen">
     <header class="feature-header planner-header">
       <div class="planner-header-left">
         <button class="back-btn" data-target="dashboard-screen"><span
@@ -289,7 +291,9 @@
         Dashboard</button>
       <div></div>
       <div class="topbar-icons">
-        <button class="icon-btn"><span class="material-symbols-outlined">dark_mode</span></button>
+        <button class="icon-btn" id="toggle-theme-pomodoro">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button>
       </div>
     </header>
 
