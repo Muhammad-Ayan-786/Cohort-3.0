@@ -1,4 +1,4 @@
-import { WEATHER_API_KEY } from "./config.js";
+﻿import { WEATHER_API_KEY } from "./config.js";
 
 /* Global Variables */
 let body = document.body

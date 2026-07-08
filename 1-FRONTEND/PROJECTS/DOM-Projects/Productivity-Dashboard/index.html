@@ -4,16 +4,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Focus Hub</title>
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <link rel="stylesheet" href="https://cloudflare.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Focus Hub • Premium Productivity Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..100&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+  <!-- ============ SKY BACKGROUND ============ -->
+  <div class="sky-background">
+    <div class="sky-layer dawn"></div>
+    <div class="sky-layer day"></div>
+    <div class="sky-layer sunset"></div>
+    <div class="sky-layer night">
+      <div class="stars"></div>
+    </div>
+    <div class="sun-orb"></div>
+    <div class="moon-orb"></div>
+  </div>
 
   <!-- ============ DASHBOARD (HOME) SCREEN — visible by default ============ -->
   <section id="dashboard-screen" class="screen active-screen">
@@ -28,9 +41,10 @@
         <button class="icon-btn" id="theme-toggle-btn" title="Toggle theme">
           <span class="material-symbols-outlined">dark_mode</span>
         </button>
-        <button class="icon-btn" title="Toggle theme">
-          <a href="https://github.com/Muhammad-Ayan-786/Cohort-3.0/tree/main/1-FRONTEND/PROJECTS" target="_blank">
-            <i class="fa fa-github" style="font-size: 20px;"></i>
+        <button class="icon-btn" title="GitHub Repository">
+          <a href="https://github.com/Muhammad-Ayan-786/Cohort-3.0/tree/main/1-FRONTEND/PROJECTS/DOM-Projects/Productivity-Dashboard"
+            target="_blank">
+            <i class="fa-brands fa-github" style="font-size: 20px;"></i>
           </a>
         </button>
       </div>
@@ -378,7 +392,7 @@
         Back to Focus</button>
       <div></div>
       <div class="topbar-icons">
-        <input class="search-btn" id="location-input" type="text" placeholder="Enter Location">
+        <input class="search-btn" id="location-input" type="text" placeholder="Enter Location" autocomplete="off">
         <button class="search-btn" id="search-btn">Submit</button>
       </div>
     </header>
