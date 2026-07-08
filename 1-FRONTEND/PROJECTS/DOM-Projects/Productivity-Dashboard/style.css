@@ -1126,9 +1126,35 @@ body.bg-night .checkbox-square {
   opacity: 0.75;
 }
 
-.delete-btn {
+.star-btn {
   color: var(--muted-icon);
   margin-left: auto;
+  border: 1px solid transparent;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.star-btn:hover {
+  color: var(--warning);
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.star-btn.starred {
+  color: var(--warning);
+}
+
+.star-btn.starred .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  color: var(--muted-icon);
+  margin-left: 4px;
   border: 1px solid transparent;
   background: transparent;
   width: 32px;

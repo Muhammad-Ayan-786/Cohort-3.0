@@ -1,1 +1,0 @@
-export const WEATHER_API_KEY = 'PASTE_YOUR_WEATHERAPI_KEY_HERE'; // or without export, matching your final choice

@@ -1,5 +1,3 @@
-﻿import { WEATHER_API_KEY } from "./config.js";
-
 /* Global Variables */
 let body = document.body
 let allScreens = Array.from(document.querySelectorAll(".screen"));  // All Screens
@@ -32,7 +30,7 @@ const dateClass = () => {
       return fullDate
     },
     showTime: (DOM_ELEM) => {
-      setInterval(() => {
+      const updateClock = () => {
         let date = new Date
 
         let hours = date.getHours().toString().padStart(2, '0')
@@ -42,7 +40,10 @@ const dateClass = () => {
         DOM_ELEM.innerText = `${hours}:${minutes}:${seconds}`
 
         return [hours, minutes, seconds]
-      }, 1000);
+      }
+
+      updateClock()
+      setInterval(updateClock, 1000)
     },
     setDynamicBackground: () => {
       const applyBg = () => {
@@ -189,7 +190,8 @@ function todoPage() {
           ${todo.completed ? `<span class="material-symbols-outlined">check</span>` : ''}
         </span>
         <span class="task-text ${todo.completed && 'done'}">${todo.todo}</span>
-        <button class="icon-btn delete-btn"><span class="material-symbols-outlined">delete</span></button>
+        <button class="icon-btn star-btn ${todo.important && 'starred'}" title="Mark as important"><span class="material-symbols-outlined">star</span></button>
+        <button class="icon-btn delete-btn" title="Delete task"><span class="material-symbols-outlined">delete</span></button>
       </li>
       `
     })
@@ -201,6 +203,7 @@ function todoPage() {
   todoListContainer.addEventListener('click', (e) => {
     const checkBox = e.target.closest('.checkbox-square')
     const deleteBtn = e.target.closest('.delete-btn')
+    const starBtn = e.target.closest('.star-btn')
 
     if (checkBox) {
       const currentTodoTile = checkBox.closest('.task-item')
@@ -247,6 +250,17 @@ function todoPage() {
       showFocusScoreInPercentage()
       leftOverTask()
     }
+
+    if (starBtn) {
+      const currentTodoTile = starBtn.closest('.task-item')
+      let currentTodo = todoArr.find(todo => currentTodoTile.dataset.id === todo._id)
+
+      currentTodo.important = !currentTodo.important
+      localStorage.setItem("todoArr", JSON.stringify(todoArr))
+
+      starBtn.classList.toggle('starred', currentTodo.important)
+      displayTodo()
+    }
   })
 
 
@@ -258,8 +272,9 @@ function todoPage() {
 
     let obj = {
       _id: crypto.randomUUID(),
-      todo,
-      completed: false
+      todo: todo.trim(),
+      completed: false,
+      important: false
     }
 
     todoArr.push(obj)
@@ -681,7 +696,7 @@ function weatherPage() {
 
   const forecastRowBox = document.getElementById("forecast-row");
 
-  const API = WEATHER_API_KEY
+  const API = '258fdbbca3ed4f4c812120529260707'
 
   // Fetches the Weather & Forecast of 1 day
   async function fetchWeatherAndForecast(cityName = 'Bhopal') {
