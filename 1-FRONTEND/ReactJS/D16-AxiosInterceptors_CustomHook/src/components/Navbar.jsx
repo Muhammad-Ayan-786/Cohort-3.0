@@ -1,0 +1,63 @@
+import { useContext } from "react";
+import { NavLink, useLocation } from "react-router";
+import toast from "react-hot-toast";
+import { AuthStore } from "../context/AuthContext";
+
+const Navbar = () => {
+  const { setLoggedInUser } = useContext(AuthStore);
+
+  return (
+    <div className="border-r border-gray-500 p-3 flex flex-col justify-between">
+      <div className="flex flex-col  gap-10">
+        <h1 className="text-3xl font-semibold">E-comm</h1>
+
+        <div className="flex flex-col gap-6 ml-5">
+          <NavLink
+            className={({ isActive }) =>
+              isActive
+                ? "font-semibold text-red-500 border-b border-gray-500"
+                : "text-black border-b border-gray-500"
+            }
+            to={"/main"}
+            end
+          >
+            Home
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive
+                ? "font-semibold text-red-500 border-b border-gray-500"
+                : "text-black border-b border-gray-500"
+            }
+            to={"/main/users"}
+          >
+            Users
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive
+                ? "font-semibold text-red-500 border-b border-gray-500"
+                : "text-black border-b border-gray-500"
+            }
+            to={"/main/products"}
+          >
+            Products
+          </NavLink>
+        </div>
+      </div>
+
+      <button
+        onClick={() => {
+          localStorage.removeItem("loggedinUser");
+          toast.success("user logged out");
+          setLoggedInUser(null);
+        }}
+        className="py-3 bg-red-600 text-white rounded cursor-pointer"
+      >
+        Logout
+      </button>
+    </div>
+  );
+};
+
+export default Navbar;
