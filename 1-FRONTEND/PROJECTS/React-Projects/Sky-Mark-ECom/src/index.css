@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-volt: #bdf600;
+  --color-ink: #000000;
+}
+
+.btn-volt {
+  border-radius: 1rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(200 244 0 / var(--tw-bg-opacity, 1));
+  padding: .75rem 1.5rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(13 13 13 / var(--tw-text-opacity, 1));
+  transition-property: all;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+  transition-duration: .15s;
+}
+
+.btn-ghost {
+  border-radius: 1rem;
+  border-width: 1px;
+  border-color: #ffffff26;
+  padding: .75rem 1.5rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  color: #ffffffb3;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+  transition-duration: .15s;
+}
+
+.btn-ghost:hover {
+  border-color: #ffffff4d;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.btn-volt:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 255 102 / var(--tw-bg-opacity, 1));
+}
+
+.product-card {
+  cursor: pointer;
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 17 17 / var(--tw-bg-opacity, 1));
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.3s;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.product-card:hover {
+  --tw-translate-y: -.25rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-shadow: 0 8px 32px rgba(200, 244, 0, .08);
+  --tw-shadow-colored: 0 8px 32px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  border-color: rgba(200, 244, 0, 0.4);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+}
+
+.field {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+  outline-offset: 2px;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.2s;
+  border-radius: 1rem;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1rem;
+  outline: transparent solid 2px;
+}
