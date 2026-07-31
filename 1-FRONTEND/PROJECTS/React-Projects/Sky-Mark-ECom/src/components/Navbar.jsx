@@ -57,11 +57,11 @@ const Navbar = () => {
         <div className="flex items-center gap-3 shrink-0">
           {/* User Profile Info */}
           {currentUser && (
-            <div className="hidden sm:flex items-center gap-2.5 bg-[#121212] border border-stone-800/80 px-3.5 py-2 rounded-xl select-none">
+            <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
               <div className="w-6 h-6 bg-volt rounded-lg flex items-center justify-center text-black text-xs font-black">
                 {currentUser.avatar}
               </div>
-              <span className="text-sm text-stone-200 font-bold max-w-30 truncate">
+              <span className="text-sm text-stone-300 max-w-30 truncate">
                 {currentUser.name}
               </span>
             </div>
@@ -74,7 +74,7 @@ const Navbar = () => {
           >
             <ShoppingCart size={18} strokeWidth={2} />
             <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-volt text-black text-[10px] font-black rounded-full flex items-center justify-center">
-              {cartItems.length}
+              {cartItems.length && cartItems.length > 9 ? '9+' : cartItems.length}
             </span>
           </button>
 

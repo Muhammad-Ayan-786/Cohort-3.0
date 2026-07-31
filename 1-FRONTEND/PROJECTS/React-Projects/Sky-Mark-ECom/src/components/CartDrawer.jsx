@@ -1,12 +1,14 @@
 import { useContext } from "react"
 import { CartStore } from "../context/CartContext"
-import { NavLink } from "react-router"
 import { ProductStore } from "../context/ProductContext"
 import CartProduct from "./CartProduct"
 import { toast } from "react-hot-toast"
 import { ShoppingBag, X, ArrowRight, PackageOpen } from "lucide-react"
+import { useNavigate } from "react-router"
 
 const CartDrawer = () => {
+
+  const navigate = useNavigate()
 
   const { onClose } = useContext(CartStore)
 
@@ -40,7 +42,7 @@ const CartDrawer = () => {
 
         <button
           onClick={onClose}
-          className="p-2 hover:bg-white/8 rounded-xl transition-colors text-white/50 hover:text-white"
+          className="p-2 hover:bg-white/8 rounded-xl transition-colors text-white/50 cursor-pointer hover:text-white"
         >
           <X size={18} />
         </button>
@@ -65,17 +67,19 @@ const CartDrawer = () => {
                 <span className="font-heading font-bold text-2xl text-white">${total.toFixed(2)}</span>
               </div>
 
+              {/* Checkout */}
               <button
                 onClick={checkoutFunc}
-                className="w-full btn-volt flex items-center justify-center gap-2 py-3.5 text-base font-heading font-bold"
+                className="w-full btn-volt flex items-center justify-center gap-2 py-3.5 text-base font-heading font-bold cursor-pointer"
               >
                 Checkout{" "}
                 <ArrowRight size={18} />
               </button>
 
+              {/* Clear Cart */}
               <button
                 onClick={clearCart}
-                className="w-full text-center text-xs text-white/25 hover:text-red-400 transition-colors py-1"
+                className="w-full text-center text-xs text-white/25 hover:text-red-400 transition-colors py-1 cursor-pointer"
               >
                 Clear cart
               </button>
@@ -96,9 +100,15 @@ const CartDrawer = () => {
                 <p className="text-white/30 text-sm mt-1">Go shop something cool!</p>
               </div>
 
-              <NavLink to={"/store"} className="btn-volt mt-2" onClick={onClose}>
+              <button
+                className="btn-volt mt-2 cursor-pointer"
+                onClick={() => {
+                  navigate('/store')
+                  onClose()
+                }}
+              >
                 Browse Products
-              </NavLink>
+              </button>
             </div>
           </div>
         )

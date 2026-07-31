@@ -1,13 +1,15 @@
 import React, { useContext, useState } from 'react'
 import { User, Mail, Lock, Eye, ArrowRight, EyeOff } from 'lucide-react'
 import Logo from '../components/Logo'
-import { NavLink } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { AuthStore } from '../context/AuthContext'
 import { nanoid } from 'nanoid'
 import toast from 'react-hot-toast'
 
 const RegisterPage = () => {
+
+  const navigate = useNavigate()
 
   const { setUsersArr, usersArr } = useContext(AuthStore)
   const [passType, setPassType] = useState('password')
@@ -37,17 +39,20 @@ const RegisterPage = () => {
     localStorage.setItem('userArr', JSON.stringify(userData))
     toast.success('Account created successfully! 🎉')
 
+    navigate('/login')
+
     reset()
   }
 
   // Handle empty validation toast trigger on form submit errors
   const onError = (errors) => {
-    if (Object.keys(errors).length > 0) {
-      // Check if any field failed due to required validation
-      const hasRequiredError = Object.values(errors).some(err => err.type === 'required')
-      if (hasRequiredError) {
-        toast.error('Fill all fields')
-      }
+    const firstError = errors.name?.message || 
+                       errors.email?.message || 
+                       errors.password?.message || 
+                       errors.confirmPassword?.message;
+    
+    if (firstError) {
+      toast.error(firstError);
     }
   }
 
@@ -99,11 +104,6 @@ const RegisterPage = () => {
                 className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
             </div>
-            {errors.name && (
-              <span className="text-red-500 text-sm mt-1 block font-body">
-                {errors.name.message}
-              </span>
-            )}
           </div>
 
           {/* Email */}
@@ -127,11 +127,6 @@ const RegisterPage = () => {
                 className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
             </div>
-            {errors.email && (
-              <span className="text-red-500 text-sm mt-1 block font-body">
-                {errors.email.message}
-              </span>
-            )}
           </div>
 
           {/* Password */}
@@ -169,11 +164,6 @@ const RegisterPage = () => {
                 {passType === 'password' ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
-            {errors.password && (
-              <span className="text-red-500 text-sm mt-1 block font-body">
-                {errors.password.message}
-              </span>
-            )}
           </div>
 
           {/* Confirm Password */}
@@ -193,11 +183,6 @@ const RegisterPage = () => {
                 className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
             </div>
-            {errors.confirmPassword && (
-              <span className="text-red-500 text-sm mt-1 block font-body">
-                {errors.confirmPassword.message}
-              </span>
-            )}
           </div>
 
           <button

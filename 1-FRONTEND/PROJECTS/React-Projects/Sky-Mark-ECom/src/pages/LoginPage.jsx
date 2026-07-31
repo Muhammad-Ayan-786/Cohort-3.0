@@ -32,10 +32,10 @@ const LoginPage = () => {
     }
   }
 
-  // Handle empty validation toast trigger on form submit errors
   const onError = (errors) => {
-    if (errors.email?.type === 'required' || errors.password?.type === 'required') {
-      toast.error('Fill all fields')
+    const firstError = errors.email?.message || errors.password?.message;
+    if (firstError) {
+      toast.error(firstError);
     }
   }
 
@@ -135,11 +135,6 @@ const LoginPage = () => {
                   className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
                 />
               </div>
-              {errors.email && (
-                <span className="text-red-500 text-[12px] mt-1 block font-body">
-                  {errors.email.message}
-                </span>
-              )}
             </div>
 
             <div>
@@ -163,11 +158,6 @@ const LoginPage = () => {
                   {passType === "password" ? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>
-              {errors.password && (
-                <span className="text-red-500 text-[12px] mt-1 block font-body">
-                  {errors.password.message}
-                </span>
-              )}
             </div>
 
             <button

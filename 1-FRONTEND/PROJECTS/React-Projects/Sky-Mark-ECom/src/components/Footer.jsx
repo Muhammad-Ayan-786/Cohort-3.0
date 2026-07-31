@@ -8,7 +8,7 @@ const Footer = () => {
           </span>
         </div>
         <span className="text-stone-600 text-xs font-semibold">
-          © 2025 SkyMart • Built with React + Redux + TanStack Query
+          &copy; {new Date().getFullYear()} All rights reserved
         </span>
       </div>
     </footer>)

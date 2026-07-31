@@ -4,7 +4,9 @@ import { Package, TrendingUp, Star, Tag } from "lucide-react"
 
 const HomeStats = () => {
 
-  const { allCategories } = useContext(ProductStore)
+  const { allCategories, cartItems, topRatedProducts } = useContext(ProductStore)
+
+  const total = cartItems.reduce((acc, product) => (acc + (product.unitPrice * product.quantity)), 0)
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 stagger">
@@ -17,7 +19,7 @@ const HomeStats = () => {
         </div>
 
         <div>
-          <p className="font-heading font-bold text-2xl text-white">1</p>
+          <p className="font-heading font-bold text-2xl text-white">{cartItems.length}</p>
           <p className="text-white/50 text-sm font-body">Cart Items</p>
           <p className="text-white/25 text-xs font-body mt-0.5">In your bag</p>
         </div>
@@ -32,7 +34,7 @@ const HomeStats = () => {
         </div>
 
         <div>
-          <p className="font-heading font-bold text-2xl text-white">$99.99</p>
+          <p className="font-heading font-bold text-2xl text-white">${total.toFixed(2)}</p>
           <p className="text-white/50 text-sm font-body">Cart Value</p>
           <p className="text-white/25 text-xs font-body mt-0.5">Ready to checkout</p>
         </div>
@@ -47,7 +49,7 @@ const HomeStats = () => {
         </div>
 
         <div>
-          <p className="font-heading font-bold text-2xl text-white">5</p>
+          <p className="font-heading font-bold text-2xl text-white">{topRatedProducts.length}</p>
           <p className="text-white/50 text-sm font-body">Top Products</p>
           <p className="text-white/25 text-xs font-body mt-0.5">Highly rated</p>
         </div>

@@ -61,7 +61,7 @@ const SpecificProduct = ({ product }) => {
                   {/* Decrement */}
                   <button
                     onClick={() => decrementQuantity(product)}
-                    className="w-8 h-8 flex items-center justify-center bg-white/8 hover:bg-white/15 border border-white/10 rounded-xl transition-all"
+                    className="w-8 h-8 flex items-center justify-center bg-white/8 hover:bg-white/15 border border-white/10 rounded-xl transition-all cursor-pointer"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-minus">
                       <path d="M5 12h14"></path>
@@ -73,7 +73,7 @@ const SpecificProduct = ({ product }) => {
                   {/* Increment */}
                   <button
                     onClick={() => incrementQuantity(product)}
-                    className="w-8 h-8 flex items-center justify-center bg-white/8 hover:bg-white/15 border border-white/10 rounded-xl transition-all"
+                    className="w-8 h-8 flex items-center justify-center bg-white/8 hover:bg-white/15 border border-white/10 rounded-xl transition-all cursor-pointer"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus">
                       <path d="M5 12h14"></path>
@@ -85,17 +85,22 @@ const SpecificProduct = ({ product }) => {
 
               {/* Added to Cart */}
               <div className="flex gap-3">
-                <button className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-heading font-bold text-base transition-all duration-200 active:scale-95 bg-green-500/15 text-green-400 border border-green-500/25 hover:bg-green-500/25">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check">
-                    <path d="M20 6 9 17l-5-5"></path>
-                  </svg>
+                <button
+                  onClick={() => {
+                    incrementQuantity(product)
+                    toast.success('Quantity updated!')
+                    onOpen()
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-heading font-bold text-base transition-all duration-200 active:scale-95 bg-green-500/15 text-green-400 border border-green-500/25 hover:bg-green-500/25 cursor-pointer"
+                >
+                  <Check size={18} />
                   Added to Cart
                 </button>
               </div>
 
               <button
                 onClick={() => onOpen()}
-                className="btn-ghost w-full text-center text-sm"
+                className="btn-ghost w-full text-center text-sm cursor-pointer"
               >
                 View Cart →
               </button>
@@ -109,7 +114,7 @@ const SpecificProduct = ({ product }) => {
                 toast.success('Added to cart 🛒')
                 onOpen()
               }}
-              className="flex gap-3"
+              className="flex gap-3 cursor-pointer"
             >
               <button className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-heading font-bold text-base transition-all duration-200 active:scale-95 btn-volt cursor-pointer">
                 <ShoppingCart size={12} strokeWidth={2} />
@@ -148,7 +153,7 @@ const SpecificProduct = ({ product }) => {
           <button
             disabled={product.id === 61}
             onClick={() => navigate(`/store/${product.id - 1}`)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl transition-all text-white text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 disabled:border-white/6"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl transition-all text-white text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 disabled:border-white/6 cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" strokeWidth={2} />
             Previous
@@ -158,7 +163,7 @@ const SpecificProduct = ({ product }) => {
           <button
             disabled={product.id === 153}
             onClick={() => navigate(`/store/${product.id + 1}`)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-volt hover:bg-volt-light text-ink border border-volt rounded-2xl transition-all font-heading font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-volt/40 disabled:border-volt/40 disabled:text-white/40"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-volt hover:bg-volt-light text-ink border border-volt rounded-2xl transition-all font-heading font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-volt/40 disabled:border-volt/40 disabled:text-white/40 cursor-pointer"
           >
             Next
             <ChevronRight className="w-4 h-4" strokeWidth={2} />

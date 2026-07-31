@@ -7,6 +7,13 @@ const HomeHeroCard = () => {
 
   const { currentUser } = useContext(AuthStore)
 
+  const greeting =
+    new Date().getHours() < 12
+      ? "Good Morning"
+      : new Date().getHours() < 18
+        ? "Good Afternoon"
+        : "Good Evening";
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-[#111] border border-white/8 p-8 sm:p-12 mb-10">
 
@@ -18,7 +25,7 @@ const HomeHeroCard = () => {
 
       <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
         <div>
-          <p className="text-volt/70 text-sm font-body tracking-widest uppercase mb-3">Good afternoon 👋</p>
+          <p className="text-volt/70 text-sm font-body tracking-widest uppercase mb-3">{greeting} 👋</p>
           <h1 className="font-heading font-bold text-4xl sm:text-5xl text-white leading-tight mb-4">
             Welcome back, <br />
             <span className="text-volt">{currentUser?.name.split(' ')[0]}</span>

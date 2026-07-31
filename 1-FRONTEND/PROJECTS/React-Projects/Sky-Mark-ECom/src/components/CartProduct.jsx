@@ -26,7 +26,7 @@ const CartProduct = ({ cartProduct }) => {
           {/* Decrement */}
           <button
             onClick={() => decrementQuantity(cartProduct)}
-            className="w-7 h-7 flex items-center justify-center bg-white/8 hover:bg-white/15 rounded-lg transition-colors border border-white/10"
+            className="w-7 h-7 flex items-center justify-center bg-white/8 hover:bg-white/15 rounded-lg transition-colors border border-white/10 cursor-pointer"
           >
             <Minus size={11} />
           </button>
@@ -36,14 +36,14 @@ const CartProduct = ({ cartProduct }) => {
           {/* Increment */}
           <button
             onClick={() => incrementQuantity(cartProduct)}
-            className="w-7 h-7 flex items-center justify-center bg-white/8 hover:bg-white/15 rounded-lg transition-colors border border-white/10">
+            className="w-7 h-7 flex items-center justify-center bg-white/8 hover:bg-white/15 rounded-lg transition-colors border border-white/10 cursor-pointer">
             <Plus size={11} />
           </button>
 
           {/* Delete */}
           <button
             onClick={() => removeFromCart(cartProduct.id)}
-            className="ml-auto text-red-400/60 hover:text-red-400 transition-colors"
+            className="ml-auto text-red-400/60 hover:text-red-400 transition-colors cursor-pointer"
           >
             <Trash2 size={14} />
           </button>

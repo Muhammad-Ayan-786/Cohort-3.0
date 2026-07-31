@@ -9,6 +9,7 @@ export const ProductContextProvider = ({ children }) => {
 
   const [productsArr, setProductsArr] = useState([])
   const [allCategories, setAllCategories] = useState([])
+  const [topRatedProducts, setTopRatedProducts] = useState([])
   const [cartItems, setCartItems] = useState(() => (
     JSON.parse(localStorage.getItem('cartItems')) || []
   ))
@@ -36,6 +37,9 @@ export const ProductContextProvider = ({ children }) => {
         return acc
       }, [])
       setAllCategories(uniqueCategories);
+
+      const topRated = products.filter((product) => product.rating >= 4)
+      setTopRatedProducts(topRated);
 
     } catch (error) {
       console.log("Error in API", error);
@@ -160,26 +164,27 @@ export const ProductContextProvider = ({ children }) => {
 
   let productValues = {
     /* ---------------------- Products ---------------------- */
-    productsArr, setProductsArr,      // All Products
-    allCategories, setAllCategories,  // All Categories
+    productsArr, setProductsArr,             // All Products
+    allCategories, setAllCategories,         // All Categories
 
-    searchQuery, setSearchQuery,      // Query
-    category, setCategory,            // Category
-    sortOption, setSortOption,        // Sort
+    searchQuery, setSearchQuery,             // Query
+    category, setCategory,                   // Category
+    sortOption, setSortOption,               // Sort
+    topRatedProducts, setTopRatedProducts,   // Top Rated
 
-    fetchAllData,                     // Get all products (API)
+    fetchAllData,                            // Get all products (API)
 
-    searchByQuery,                    // Search products by query
-    selectedCategory,                 // Filter by category
-    sortProducts,                      // Sort products by option
+    searchByQuery,                           // Search products by query
+    selectedCategory,                        // Filter by category
+    sortProducts,                            // Sort products by option
 
     /* ---------------------- Cart ---------------------- */
-    cartItems, setCartItems,          // All Cart Items
-    addToCart,                        // Add to Cart
-    removeFromCart,                   // Remove from Cart
-    clearCart,                        // Clear Cart
-    incrementQuantity,                // Increment Quantity
-    decrementQuantity,                // Decrement Quantity
+    cartItems, setCartItems,                 // All Cart Items
+    addToCart,                               // Add to Cart
+    removeFromCart,                          // Remove from Cart
+    clearCart,                               // Clear Cart
+    incrementQuantity,                       // Increment Quantity
+    decrementQuantity,                       // Decrement Quantity
   }
 
   return <ProductStore.Provider value={productValues}>

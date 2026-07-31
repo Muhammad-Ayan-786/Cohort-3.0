@@ -4,12 +4,12 @@ import { useContext } from "react"
 import { ProductStore } from "../context/ProductContext"
 import { CartStore } from "../context/CartContext"
 import { toast } from "react-hot-toast"
-import { ShoppingCart, Trash2 } from "lucide-react"
+import { Check, ShoppingCart, Trash2 } from "lucide-react"
 
 const ProductCard = ({ product, isInCart }) => {
   const navigate = useNavigate()
 
-  const { addToCart, removeFromCart } = useContext(ProductStore)
+  const { addToCart, incrementQuantity } = useContext(ProductStore)
   const { onOpen } = useContext(CartStore)
 
   const handleAddToCart = (e, product) => {
@@ -19,9 +19,11 @@ const ProductCard = ({ product, isInCart }) => {
     onOpen()
   }
 
-  const handleRemoveFromCart = (e, productId) => {
+  const handleIncrement = (e, product) => {
     e.stopPropagation()
-    removeFromCart(productId)
+    incrementQuantity(product)
+    toast.success('Quantity updated!')
+    onOpen()
   }
 
   return (
@@ -56,13 +58,13 @@ const ProductCard = ({ product, isInCart }) => {
 
           {
             isInCart ? (
-              // Remove from Cart
+              // Increment Quantity
               <button
-                onClick={(e) => handleRemoveFromCart(e, product.id)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold font-body transition-all cursor-pointer duration-200 active:scale-95 bg-red-500 text-white hover:bg-red-600"
+                onClick={(e) => handleIncrement(e, product)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold font-body transition-all duration-200 active:scale-95 bg-green-500/15 text-green-400 border border-green-500/20 cursor-pointer hover:bg-green-500/20"
               >
-                <Trash2 className="w-3 h-3" strokeWidth={2} />
-                Remove
+                <Check className="w-3 h-3" strokeWidth={2} />
+                Added
               </button>
 
             ) : (

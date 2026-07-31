@@ -18,48 +18,36 @@ const ProductDetail = () => {
 
   const { cartItems } = useContext(ProductStore)
 
-  const fetchSingleData = async (id) => {
-    setIsLoading(true);
+
+  const fetchData = async (productId) => {
+    setIsLoading(true)
+
     try {
-      if (!id || id < 1) return
 
-      const { data } = await axios.get(`https://dummyjson.com/products/${id}`)
-      setCurrentProduct(data)
+      const { data: productData } = await axios.get(
+        `https://dummyjson.com/products/${productId}`
+      )
+      setCurrentProduct(productData)
 
-    } catch (error) {
-      console.log("Error in API", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const fetchRelatedData = async () => {
-    try {
-      if (!id || id < 1) return
-      if (!currentProduct.category) return
-
-      const { data: { products: data } } = await axios.get(
-        `https://dummyjson.com/products/category/${currentProduct.category}`
+      const { data: { products: categoryProducts } } = await axios.get(
+        `https://dummyjson.com/products/category/${productData.category}`
       )
 
       setRelatedProducts(
-        data.filter(product => product.id !== currentProduct.id)
+        categoryProducts.filter(p => p.id !== productData.id)
       )
 
     } catch (error) {
-      console.log("Error in API", error);
+      console.log("Error fetching data", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchSingleData(id);
+    fetchData(id);
   }, [id])
 
-  useEffect(() => {
-    if (currentProduct.category) {
-      fetchRelatedData();
-    }
-  }, [currentProduct.category])
 
 
   return (
