@@ -16,12 +16,14 @@ export const ProductContextProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [category, setCategory] = useState('all');
   const [sortOption, setSortOption] = useState('default');
+  const [isLoading, setIsLoading] = useState(false);
 
 
   /* =============== Products Related Functions =============== */
 
   //* ALL PRODUCTS
   const fetchAllData = async () => {
+    setIsLoading(true);
     try {
       const { data: { products } } = await axios.get('https://dummyjson.com/products?limit=93&skip=60')
 
@@ -37,6 +39,8 @@ export const ProductContextProvider = ({ children }) => {
 
     } catch (error) {
       console.log("Error in API", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 

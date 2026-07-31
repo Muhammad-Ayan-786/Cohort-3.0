@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { ProductStore } from "../context/ProductContext"
+import { Minus, Plus, Trash2 } from "lucide-react"
 
 const CartProduct = ({ cartProduct }) => {
 
@@ -27,9 +28,7 @@ const CartProduct = ({ cartProduct }) => {
             onClick={() => decrementQuantity(cartProduct)}
             className="w-7 h-7 flex items-center justify-center bg-white/8 hover:bg-white/15 rounded-lg transition-colors border border-white/10"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-minus">
-              <path d="M5 12h14"></path>
-            </svg>
+            <Minus size={11} />
           </button>
 
           <span className="text-sm font-bold font-body w-5 text-center">{cartProduct.quantity}</span>
@@ -38,9 +37,7 @@ const CartProduct = ({ cartProduct }) => {
           <button
             onClick={() => incrementQuantity(cartProduct)}
             className="w-7 h-7 flex items-center justify-center bg-white/8 hover:bg-white/15 rounded-lg transition-colors border border-white/10">
-            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus"><path d="M5 12h14"></path>
-              <path d="M12 5v14"></path>
-            </svg>
+            <Plus size={11} />
           </button>
 
           {/* Delete */}
@@ -48,13 +45,7 @@ const CartProduct = ({ cartProduct }) => {
             onClick={() => removeFromCart(cartProduct.id)}
             className="ml-auto text-red-400/60 hover:text-red-400 transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash2">
-              <path d="M3 6h18"></path>
-              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-              <line x1="10" x2="10" y1="11" y2="17"></line>
-              <line x1="14" x2="14" y1="11" y2="17"></line>
-            </svg>
+            <Trash2 size={14} />
           </button>
 
         </div>

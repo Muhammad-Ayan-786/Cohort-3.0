@@ -3,6 +3,8 @@ import StartRating from "./StartRating"
 import { useContext } from "react"
 import { ProductStore } from "../context/ProductContext"
 import { CartStore } from "../context/CartContext"
+import { toast } from "react-hot-toast"
+import { ShoppingCart, Trash2 } from "lucide-react"
 
 const ProductCard = ({ product, isInCart }) => {
   const navigate = useNavigate()
@@ -13,6 +15,7 @@ const ProductCard = ({ product, isInCart }) => {
   const handleAddToCart = (e, product) => {
     e.stopPropagation()
     addToCart(product)
+    toast.success('Added to cart 🛒')
     onOpen()
   }
 
@@ -58,6 +61,7 @@ const ProductCard = ({ product, isInCart }) => {
                 onClick={(e) => handleRemoveFromCart(e, product.id)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold font-body transition-all cursor-pointer duration-200 active:scale-95 bg-red-500 text-white hover:bg-red-600"
               >
+                <Trash2 className="w-3 h-3" strokeWidth={2} />
                 Remove
               </button>
 
@@ -67,16 +71,11 @@ const ProductCard = ({ product, isInCart }) => {
                 onClick={(e) => handleAddToCart(e, product)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold font-body transition-all cursor-pointer duration-200 active:scale-95 bg-volt text-ink hover:bg-volt-light"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-cart">
-                  <circle cx="8" cy="21" r="1"></circle>
-                  <circle cx="19" cy="21" r="1"></circle>
-                  <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                </svg>
+                <ShoppingCart className="w-3 h-3" strokeWidth={2} />
                 Add
               </button>
             )
           }
-
 
         </div>
       </div>

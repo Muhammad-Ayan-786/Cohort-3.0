@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import { ProductStore } from '../context/ProductContext'
 import ProductCard from '../components/ProductCard'
+import { ProductSkeleton } from '../components/ProductSkeleton'
 import StoreSearchBar from '../components/StoreSearchBar'
 import { useSearchParams } from 'react-router'
 
@@ -13,6 +14,7 @@ const StorePage = () => {
 
   const {
     fetchAllData,
+    isLoading,
 
     searchQuery, setSearchQuery,
     category, sortOption,
@@ -65,24 +67,29 @@ const StorePage = () => {
 
         {/* Products */}
         {
-          finalResult.length > 0
-            ?
+          isLoading ?
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {
-                finalResult?.map(product => {
-                  let isInCart = cartItems.find(carProduct => carProduct.id === product.id)
-
-                  return <ProductCard
-                    key={product.id}
-                    product={product}
-                    isInCart={isInCart}
-                  />
-                })
-              }
+              {[...Array(10)].map((_, i) => <ProductSkeleton key={i} />)}
             </div>
             :
-            // Noo Products
-            <div className="flex flex-col items-center py-24 gap-4 text-center">
+            finalResult.length > 0
+              ?
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {
+                  finalResult?.map(product => {
+                    let isInCart = cartItems.find(carProduct => carProduct.id === product.id)
+
+                    return <ProductCard
+                      key={product.id}
+                      product={product}
+                      isInCart={isInCart}
+                    />
+                  })
+                }
+              </div>
+              :
+              // Noo Products
+              <div className="flex flex-col items-center py-24 gap-4 text-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search text-white/15">
                 <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"></path>
                 <path d="m7.5 4.27 9 5.15"></path>

@@ -5,17 +5,21 @@ import Footer from "./Footer"
 import Navbar from "./Navbar"
 import SpecificProduct from "./SpecificProduct";
 import RelatedProducts from "./RelatedProducts";
+import { DetailSkeleton } from "./DetailSkeleton";
 import { ProductStore } from "../context/ProductContext";
+import { ArrowLeft } from "lucide-react";
 
 const ProductDetail = () => {
 
   const { id } = useParams()
   const [currentProduct, setCurrentProduct] = useState({})
   const [relatedProducts, setRelatedProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
   const { cartItems } = useContext(ProductStore)
 
   const fetchSingleData = async (id) => {
+    setIsLoading(true);
     try {
       if (!id || id < 1) return
 
@@ -24,6 +28,8 @@ const ProductDetail = () => {
 
     } catch (error) {
       console.log("Error in API", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -68,10 +74,7 @@ const ProductDetail = () => {
             to={'/store'}
             className="hover:text-white flex items-center gap-1.5 transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left" data-darkreader-inline-stroke="" style={{ "--darkreader-inline-stroke": "currentColor" }}>
-              <path d="m12 19-7-7 7-7"></path>
-              <path d="M19 12H5"></path>
-            </svg>
+            <ArrowLeft className="w-3.5 h-3.5" strokeWidth={2} />
             Product
           </NavLink>
 
@@ -81,8 +84,14 @@ const ProductDetail = () => {
           <span className="text-white/70 clamp-1 max-w-50 truncate">{currentProduct.title}</span>
         </nav>
 
-        <SpecificProduct product={currentProduct} />
+        {
+          isLoading ?
+            <DetailSkeleton />
+            :
+            <SpecificProduct product={currentProduct} />
+        }
 
+        {/* Related Products */}
         <section>
           <h2 className="font-heading font-bold text-2xl mb-6">Related Products</h2>
 

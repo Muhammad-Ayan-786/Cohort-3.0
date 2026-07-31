@@ -5,6 +5,7 @@ import { NavLink } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { AuthStore } from '../context/AuthContext'
 import { nanoid } from 'nanoid'
+import toast from 'react-hot-toast'
 
 const RegisterPage = () => {
 
@@ -34,28 +35,40 @@ const RegisterPage = () => {
 
     setUsersArr(userData)
     localStorage.setItem('userArr', JSON.stringify(userData))
+    toast.success('Account created successfully! 🎉')
 
     reset()
   }
 
+  // Handle empty validation toast trigger on form submit errors
+  const onError = (errors) => {
+    if (Object.keys(errors).length > 0) {
+      // Check if any field failed due to required validation
+      const hasRequiredError = Object.values(errors).some(err => err.type === 'required')
+      if (hasRequiredError) {
+        toast.error('Fill all fields')
+      }
+    }
+  }
+
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-[#090909] text-white p-6">
+    <main className="flex flex-col items-center justify-center min-h-screen bg-[#090909] text-white p-6 font-body">
       {/* Centered Logo at the top */}
-      <div className="mb-8">
+      <div className="mb-8 animate-fade-in-quick">
         <Logo />
       </div>
 
       {/* Register Card */}
-      <div className="w-full max-w-105 bg-[#111111] border border-stone-900/60 rounded-[28px] p-8 md:p-10">
-        <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2">
+      <div className="w-full max-w-110 bg-[#111111]/80 border border-white/8 rounded-4xl p-8 md:p-10 shadow-2xl backdrop-blur-md animate-fade-in-quick" style={{ animationDelay: '0.1s' }}>
+        <h2 className="text-3xl font-extrabold tracking-tight text-white mb-2 font-heading">
           Create account
         </h2>
-        <p className="text-stone-500 text-[14px] mb-8">
+        <p className="text-stone-500 text-[14px] mb-8 font-body">
           Join SkyMart and start shopping
         </p>
 
-        <form onSubmit={handleSubmit(formSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(formSubmit, onError)} className="space-y-4">
 
           {/* Full Name */}
           <div>
@@ -83,12 +96,12 @@ const RegisterPage = () => {
                 })}
                 type="text"
                 placeholder="Full name"
-                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-800/80 focus:border-stone-750 focus:outline-none transition-colors duration-200"
+                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
             </div>
-            {errors.fullName && (
-              <span className="text-red-500 text-sm mt-1">
-                {errors.fullName.message}
+            {errors.name && (
+              <span className="text-red-500 text-sm mt-1 block font-body">
+                {errors.name.message}
               </span>
             )}
           </div>
@@ -111,11 +124,11 @@ const RegisterPage = () => {
                 })}
                 type="email"
                 placeholder="Email address"
-                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-800/80 focus:border-stone-750 focus:outline-none transition-colors duration-200"
+                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
             </div>
             {errors.email && (
-              <span className="text-red-500 text-sm mt-1">
+              <span className="text-red-500 text-sm mt-1 block font-body">
                 {errors.email.message}
               </span>
             )}
@@ -148,7 +161,7 @@ const RegisterPage = () => {
                 })}
                 type={passType}
                 placeholder="Password (min 6 chars)"
-                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-800/80 focus:border-stone-750 focus:outline-none transition-colors duration-200"
+                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
               <button type="button" className="absolute right-4 text-stone-500 hover:text-stone-300 transition-colors cursor-pointer"
                 onClick={() => passType === 'password' ? setPassType('text') : setPassType('password')}
@@ -157,7 +170,7 @@ const RegisterPage = () => {
               </button>
             </div>
             {errors.password && (
-              <span className="text-red-500 text-sm mt-1">
+              <span className="text-red-500 text-sm mt-1 block font-body">
                 {errors.password.message}
               </span>
             )}
@@ -177,11 +190,11 @@ const RegisterPage = () => {
                 })}
                 type="password"
                 placeholder="Confirm password"
-                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-800/80 focus:border-stone-750 focus:outline-none transition-colors duration-200"
+                className="w-full bg-[#161616] text-white placeholder-stone-500 text-sm rounded-xl py-3.5 pl-12 pr-12 border border-stone-850 focus:border-volt/50 focus:ring-1 focus:ring-volt/10 focus:outline-none transition-all duration-200 font-body"
               />
             </div>
             {errors.confirmPassword && (
-              <span className="text-red-500 text-sm mt-1">
+              <span className="text-red-500 text-sm mt-1 block font-body">
                 {errors.confirmPassword.message}
               </span>
             )}
@@ -189,16 +202,16 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 w-full bg-volt text-black font-extrabold text-[15px] py-3.5 rounded-xl mt-6 hover:bg-[#aee200] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="flex items-center justify-center gap-2 w-full bg-volt text-black font-extrabold text-[15px] py-3.5 rounded-xl mt-6 hover:bg-[#aee200] active:scale-[0.98] transition-all duration-200 cursor-pointer font-body shadow-lg shadow-volt/5 hover:shadow-volt/15"
           >
             Create Account
             <ArrowRight size={18} strokeWidth={2.5} />
           </button>
         </form>
 
-        <div className="mt-8 text-center text-stone-500 text-sm">
+        <div className="mt-8 text-center text-stone-500 text-sm font-body">
           Already have an account?{' '}
-          <NavLink to={"/login"} className="text-volt hover:underline font-semibold">
+          <NavLink to={"/login"} className="text-volt hover:underline font-semibold transition-colors">
             Sign in
           </NavLink>
         </div>

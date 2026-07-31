@@ -15,7 +15,6 @@ export const AuthContextProvider = ({ children }) => {
 
   const navigate = useNavigate()
 
-
   const loginUser = (user) => {
     const matchedUser = usersArr.find(val => (
       val.email === user.email &&
@@ -23,16 +22,16 @@ export const AuthContextProvider = ({ children }) => {
     ))
 
     if (!matchedUser) {
-      alert('Invalid credentials.')
       setCurrentUser(null)
       localStorage.setItem('currentUser', JSON.stringify(null))
-      return
+      return false
     }
 
     setCurrentUser(matchedUser)
     localStorage.setItem('currentUser', JSON.stringify(matchedUser))
 
     navigate('/home')
+    return true
   }
 
   let authValues = {

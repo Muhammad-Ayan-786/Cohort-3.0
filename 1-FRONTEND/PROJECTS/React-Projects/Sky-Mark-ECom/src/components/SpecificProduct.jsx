@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from "react-router"
 import { ProductStore } from "../context/ProductContext"
 import StartRating from "./StartRating"
 import { CartStore } from "../context/CartContext"
+import { toast } from "react-hot-toast"
+import { ChevronLeft, ChevronRight, RotateCcw, Shield, ShoppingCart, Truck, Minus, Plus, Check } from "lucide-react"
 
 const SpecificProduct = ({ product }) => {
   const navigate = useNavigate()
@@ -17,7 +19,7 @@ const SpecificProduct = ({ product }) => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 mb-16">
 
       {/* Product Image */}
-      <div className="bg-white rounded-3xl p-10 flex items-center justify-center aspect-square animate-scale-in">
+      <div className="bg-white rounded-4xl border border-white/5 shadow-2xl p-10 flex items-center justify-center aspect-square animate-scale-in">
         {
           !(product?.images) ?
             <div>Loading...</div> :
@@ -104,16 +106,13 @@ const SpecificProduct = ({ product }) => {
             <div
               onClick={() => {
                 addToCart(product)
+                toast.success('Added to cart 🛒')
                 onOpen()
               }}
               className="flex gap-3"
             >
-              <button className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-heading font-bold text-base transition-all duration-200 active:scale-95 btn-volt">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-cart">
-                  <circle cx="8" cy="21" r="1"></circle>
-                  <circle cx="19" cy="21" r="1"></circle>
-                  <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                </svg>
+              <button className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-heading font-bold text-base transition-all duration-200 active:scale-95 btn-volt cursor-pointer">
+                <ShoppingCart size={12} strokeWidth={2} />
                 Add to Cart
               </button>
             </div>
@@ -123,31 +122,21 @@ const SpecificProduct = ({ product }) => {
         {/* Delivery Detail Cards */}
         <div className="grid grid-cols-3 gap-3 mt-1">
           <div className="bg-white/3 border border-white/6 rounded-2xl p-3 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-truck text-volt mx-auto mb-1.5"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
-              <path d="M15 18H9"></path>
-              <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
-              <circle cx="17" cy="18" r="2"></circle>
-              <circle cx="7" cy="18" r="2"></circle>
-            </svg>
+            <Truck size={16} className="text-volt mx-auto mb-1.5" strokeWidth={2} />
 
             <p className="text-white/60 text-[11px] font-body font-semibold">Free Delivery</p>
             <p className="text-white/25 text-[10px] font-body">On orders $50+</p>
           </div>
 
           <div className="bg-white/3 border border-white/6 rounded-2xl p-3 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield text-volt mx-auto mb-1.5">
-              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
-            </svg>
+            <Shield className="w-4 h-4 text-volt mx-auto mb-1.5" strokeWidth={2} />
 
             <p className="text-white/60 text-[11px] font-body font-semibold">Secure Pay</p>
             <p className="text-white/25 text-[10px] font-body">256-bit SSL</p>
           </div>
 
           <div className="bg-white/3 border border-white/6 rounded-2xl p-3 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-ccw text-volt mx-auto mb-1.5">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-              <path d="M3 3v5h5"></path>
-            </svg>
+            <RotateCcw className="w-4 h-4 text-volt mx-auto mb-1.5" strokeWidth={2} />
 
             <p className="text-white/60 text-[11px] font-body font-semibold">Easy Returns</p>
             <p className="text-white/25 text-[10px] font-body">30-day policy</p>
@@ -161,9 +150,7 @@ const SpecificProduct = ({ product }) => {
             onClick={() => navigate(`/store/${product.id - 1}`)}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl transition-all text-white text-sm font-body disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-white/5 disabled:border-white/6"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left">
-              <path d="m15 18-6-6 6-6"></path>
-            </svg>
+            <ChevronLeft className="w-4 h-4" strokeWidth={2} />
             Previous
           </button>
 
@@ -174,8 +161,7 @@ const SpecificProduct = ({ product }) => {
             className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-volt hover:bg-volt-light text-ink border border-volt rounded-2xl transition-all font-heading font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-volt/40 disabled:border-volt/40 disabled:text-white/40"
           >
             Next
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right">
-              <path d="m9 18 6-6-6-6"></path></svg>
+            <ChevronRight className="w-4 h-4" strokeWidth={2} />
           </button>
         </div>
 

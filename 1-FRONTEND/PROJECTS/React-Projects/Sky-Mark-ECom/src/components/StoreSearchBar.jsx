@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { ProductStore } from "../context/ProductContext"
+import { Search, X, ChevronDown } from "lucide-react";
 
 const StoreSearchBar = () => {
 
@@ -29,48 +30,43 @@ const StoreSearchBar = () => {
 
         {/* Search */}
         <div className="relative flex-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search absolute left-3.5 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </svg>
+          <Search className="absolute left-4.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" strokeWidth={1.5} size={18} />
 
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products..."
-            className="field pl-10 pr-8 h-10 w-full"
+            className="field pl-12 pr-10 h-11 w-full font-body"
           />
 
           {searchQuery !== ''
             &&
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors cursor-pointer"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
-                <path d="M18 6 6 18"></path>
-                <path d="m6 6 12 12"></path>
-              </svg>
+              <X className="lucide lucide-x" />
             </button>
           }
 
         </div>
+
 
         {/* Categories */}
         <div className="relative">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="field h-10 pr-8 appearance-none cursor-pointer min-w-40"
+            className="field field-normal h-11 pr-10 appearance-none cursor-pointer min-w-45 font-body bg-[#161616]"
           >
-            <option value="all">All Categories</option>
+            <option value="all" className="bg-[#111] text-white">All Categories</option>
             {allCategories.length > 0 && allCategories.map((category) => (
-              <option key={category} value={category}>{category}</option>
+              <option key={category} value={category} className="bg-[#111] text-white capitalize">{category}</option>
             ))}
           </select>
 
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none">
             <path d="m6 9 6 6 6-6"></path>
           </svg>
         </div>
@@ -80,16 +76,16 @@ const StoreSearchBar = () => {
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="field h-10 pr-8 appearance-none cursor-pointer min-w-45"
+            className="field field-normal h-11 pr-10 appearance-none cursor-pointer min-w-45 font-body bg-[#161616]"
           >
-            <option value="default">Featured</option>
-            <option value="price-asc">Price: Low → High</option>
-            <option value="price-desc">Price: High → Low</option>
-            <option value="rating-desc">Top Rated</option>
-            <option value="rating-asc">Lowest Rated</option>
+            <option value="default" className="bg-[#111] text-white">Featured</option>
+            <option value="price-asc" className="bg-[#111] text-white">Price: Low → High</option>
+            <option value="price-desc" className="bg-[#111] text-white">Price: High → Low</option>
+            <option value="rating-desc" className="bg-[#111] text-white">Top Rated</option>
+            <option value="rating-asc" className="bg-[#111] text-white">Lowest Rated</option>
           </select>
 
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none">
             <path d="m6 9 6 6 6-6"></path>
           </svg>
         </div>
@@ -116,11 +112,8 @@ const StoreSearchBar = () => {
           // Searched Query
           <span className="badge bg-volt/10 text-volt border border-volt/20 text-xs gap-1">
             "{searchQuery}"
-            <button>
-              <svg
-                onClick={() => setSearchQuery('')}
-                xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x cursor-pointer"
-              >
+            <button className="cursor-pointer" onClick={() => setSearchQuery('')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-x">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
               </svg>
@@ -132,11 +125,8 @@ const StoreSearchBar = () => {
           // Selected Category
           <span className="badge bg-volt/10 text-volt border border-volt/20 text-xs gap-1">
             "{category}"
-            <button>
-              <svg
-                onClick={() => setCategory('all')}
-                xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x cursor-pointer"
-              >
+            <button className="cursor-pointer" onClick={() => setCategory('all')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-x">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
               </svg>
@@ -148,11 +138,8 @@ const StoreSearchBar = () => {
           // Selected Sort
           <span className="badge bg-volt/10 text-volt border border-volt/20 text-xs gap-1">
             "{sortOption}"
-            <button>
-              <svg
-                onClick={() => setSortOption('default')}
-                xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x cursor-pointer"
-              >
+            <button className="cursor-pointer" onClick={() => setSortOption('default')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-x">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
               </svg>

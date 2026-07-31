@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { AuthStore } from "../context/AuthContext"
 import { NavLink } from "react-router"
+import { ArrowRight } from "lucide-react"
 
 const HomeHeroCard = () => {
 
@@ -30,10 +31,7 @@ const HomeHeroCard = () => {
           <div className="flex gap-3 mt-6 flex-wrap">
             <NavLink to={"/store"} className="btn-volt flex items-center gap-2">
               Shop Now{" "}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right">
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
+              <ArrowRight className="w-4 h-4" strokeWidth={2} />
             </NavLink>
 
             <NavLink to={"/store"} className="btn-ghost flex items-center gap-2">
