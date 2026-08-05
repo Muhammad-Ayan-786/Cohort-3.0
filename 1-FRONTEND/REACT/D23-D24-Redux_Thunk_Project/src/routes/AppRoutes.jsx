@@ -10,6 +10,7 @@ import LoginPage from "../features/auth/ui/pages/LoginPage"
 import RegisterPage from "../features/auth/ui/pages/RegisterPage"
 
 import HomePage from "../shared/ui/pages/HomePage"
+import AboutPage from "../shared/ui/pages/AboutPage"
 import ProductPage from "../features/products/ui/pages/ProductPage"
 import CartPage from "../features/cart/ui/pages/CartPage"
 import OrderPage from "../features/orders/ui/pages/OrderPage"
@@ -60,6 +61,7 @@ const AppRoutes = () => {
             { path: 'products', element: <ProductPage /> },
             { path: 'cart', element: <CartPage /> },
             { path: 'orders', element: <OrderPage /> },
+            { path: 'about', element: <AboutPage /> },
           ]
         }
       ]
