@@ -1,17 +1,23 @@
 import generateCode from '../utils/generateCode.js'
 import URLModel from '../models/url.model.js'
 
+const DEMO_URL = 'https://shorten.url/demo/dispatch?source=link-ledger'
 
 export const createURL = async (req, res) => {
+
   const { url } = req.body
+
+  if (!url || url.trim() === '') return res.status(400).json({ error: 'Please enter a URL' })
+
+  if (url.trim() === DEMO_URL) {
+    return res.status(400).json({
+      error: "This is a demo link and cannot be created. Try another URL."
+    })
+  }
 
   const existingUrl = await URLModel.findOne({ originalUrl: url })
 
   if (existingUrl) return res.status(400).json({ "error": "URL already exists" })
-
-  if (!url) return res.status(400).json({ "error": "Please enter a URL" })
-
-  if (url.trim() === '') return res.status(400).json({ "error": "Please enter a URL" })
 
   if (
     url.startsWith('http://') === false &&
