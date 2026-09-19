@@ -1,7 +1,7 @@
 import { Check, Copy, Eye, Trash2 } from 'lucide-react'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
-const LinkTile = ({ item, shortUrl, domain, deleteLink }) => {
+const LinkTile = ({ item, shortUrl, domain, deleteLink, isDeleting }) => {
 
   const { copiedId, copyToClipboard } = useCopyToClipboard()
 
@@ -24,7 +24,7 @@ const LinkTile = ({ item, shortUrl, domain, deleteLink }) => {
             rel="noreferrer"
             className="text-[15px] font-bold text-[#1C1917] hover:text-(--accent-orange) hover:underline"
           >
-            {shortUrl}
+            https://shorten.url/{item.shortCode}
           </a>
 
 
@@ -66,11 +66,12 @@ const LinkTile = ({ item, shortUrl, domain, deleteLink }) => {
           <div className="h-4 w-px bg-[#DCD6CC]" />
 
           <button
-            className="px-2.5 py-1.5 text-[#78716C] hover:text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer"
+            className={`px-2.5 py-1.5 text-[#78716C] hover:text-[#DC2626] hover:bg-[#FEF2F2] transition-colors cursor-pointer ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
             title="Delete Link"
             onClick={() => deleteLink(item._id)}
+            disabled={isDeleting}
           >
-            <Trash2 size={13} />
+            {isDeleting ? <Trash2 size={13} className="animate-pulse" /> : <Trash2 size={13} />}
           </button>
         </div>
       </div>

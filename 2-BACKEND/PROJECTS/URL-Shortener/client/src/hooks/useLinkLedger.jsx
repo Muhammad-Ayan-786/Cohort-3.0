@@ -4,10 +4,10 @@ import { fetchAllLinksAPI, deleteLinkAPI } from "../api/urlApis"
 
 export const useLinkLedger = () => {
 
-  const { newURL } = useContext(UrlContext)
+  const { newURL, setNewURL, links, setLinks } = useContext(UrlContext)
 
-  const [links, setLinks] = useState([])
   const [isLoadingLinks, setIsLoadingLinks] = useState(true)
+  const [deletingLinks, setDeletingLinks] = useState({})
 
   const [activeView, setActiveView] = useState('empty')
   const [viewNotice, setViewNotice] = useState(null)
@@ -38,6 +38,10 @@ export const useLinkLedger = () => {
       const linksData = await fetchAllLinksAPI()
       setLinks(linksData)
 
+      if (newURL && !linksData.some((link) => link.shortCode === newURL.shortCode)) {
+        setNewURL(null)
+      }
+
     } catch (error) {
       console.log('Error in fetching links', error)
     } finally {
@@ -48,11 +52,14 @@ export const useLinkLedger = () => {
 
   // Delete link function
   const deleteLink = async (linkId) => {
+    setDeletingLinks(prev => ({ ...prev, [linkId]: true }))
     try {
       await deleteLinkAPI(linkId)
       await loadLinks()
     } catch (error) {
       console.log('Error in deleting link', error)
+    } finally {
+      setDeletingLinks(prev => ({ ...prev, [linkId]: false }))
     }
   }
 
@@ -83,6 +90,7 @@ export const useLinkLedger = () => {
   return {
     links,
     isLoadingLinks,
+    deletingLinks,
     showEmptyState,
     activeView,
     viewNotice,

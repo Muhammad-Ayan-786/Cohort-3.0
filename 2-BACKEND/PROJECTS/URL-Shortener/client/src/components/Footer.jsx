@@ -40,18 +40,10 @@ const Footer = () => {
 
         {/* BOTTOM LEGAL & LINKS */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-[0.14em]">
-          <div className="flex items-center gap-4">
+          <div className="w-full justify-between flex items-center gap-4">
             <span>© 2026 BREVITY INC.</span>
             <span>•</span>
             <span>ISSUE 04 EDITION</span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <a href="#privacy" className="hover:text-[#1C1917] hover:underline">PRIVACY LEDGER</a>
-            <span>/</span>
-            <a href="#terms" className="hover:text-[#1C1917] hover:underline">TERMS OF WIRE</a>
-            <span>/</span>
-            <a href="#api" className="hover:text-[#1C1917] hover:underline">DOCS</a>
           </div>
         </div>
       </div>

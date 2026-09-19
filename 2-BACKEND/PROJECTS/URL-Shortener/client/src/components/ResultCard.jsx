@@ -5,9 +5,13 @@ import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
 const ResultCard = () => {
 
-  const { newURL } = useContext(UrlContext)
+  const { newURL, links } = useContext(UrlContext)
+  const hasResult = Boolean(newURL && links.length > 0)
 
-  const shortUrl = newURL ? `http://localhost:3000/${newURL.shortCode}` : null
+  const shortUrl = hasResult
+    ? `${import.meta.env.VITE_BACKEND_URL}/${newURL.shortCode}`
+    : null
+
   const { copiedId, copyToClipboard } = useCopyToClipboard()
   const copied = copiedId === 'result-card'
 
@@ -23,15 +27,15 @@ const ResultCard = () => {
               {/* NEWLY CREATED BADGE */}
               <span className="inline-flex items-center gap-1.5 rounded-md bg-[#FFEDD5] px-2.5 py-0.5 text-[10px] font-bold text-[#C2410C] tracking-wider uppercase">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#EA580C]" />
-                NEWLY CREATED
+                {hasResult ? 'NEWLY CREATED' : 'NO ACTIVE RESULT'}
               </span>
               <span className="font-semibold text-[#4C4039] uppercase tracking-widest">
-                ID: #REC-9821
+                {hasResult ? 'ID: #REC-9821' : 'RESULT CARD'}
               </span>
             </div>
 
             <span className="font-semibold uppercase tracking-wider text-[#C2410C]">
-              {newURL ? 'Dispatched Just Now' : 'Awaiting First Dispatch'}
+              {hasResult ? 'Dispatched Just Now' : 'Awaiting Active Link'}
             </span>
           </div>
 
@@ -39,7 +43,7 @@ const ResultCard = () => {
           <div className="border border-[#E7E0D3] bg-white p-5 sm:p-6 rounded-[1px]">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="min-w-0 flex-1">
-                {!newURL ? (
+                {!hasResult ? (
                   <div className="flex items-start gap-4 sm:gap-5">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-[#FFD8C0] bg-[#FFF4E8] font-mono text-sm font-bold text-[#C2410C] shadow-[3px_3px_0px_0px_#FFE8D6] sm:h-14 sm:w-14 sm:text-base">
                       01
@@ -52,14 +56,14 @@ const ResultCard = () => {
                         </span>
                       </div>
                       <h2 className="font-headline text-3xl font-bold italic leading-none tracking-[-0.02em] text-[#292522] sm:text-4xl">
-                        Create your first link.
+                        No active link to display.
                       </h2>
                       <p className="mt-3 max-w-xl font-mono text-[12px] leading-relaxed tracking-wide text-[#78716C]">
-                        Your shortened URL will land here after a successful dispatch.
+                        Your shortened URL will appear here after a successful dispatch.
                       </p>
                       <div className="mt-4 inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#9A3412]">
                         <ArrowUpRight size={14} />
-                        <span>Start with the form above</span>
+                        <span>Ready for your next dispatch</span>
                       </div>
                     </div>
                   </div>
@@ -78,7 +82,9 @@ const ResultCard = () => {
                         rel="noreferrer"
                         className="flex min-w-0 max-w-full items-start gap-2 font-mono text-xl font-bold text-(--accent-orange) hover:underline sm:text-2xl"
                       >
-                        <span className="break-all">{shortUrl}</span>
+                        <span className="break-all">
+                          https://shorten.url/{newURL.shortCode}
+                        </span>
                         <ExternalLink size={18} className="shrink-0 text-(--accent-orange)" />
                       </a>
                     </div>
@@ -93,7 +99,7 @@ const ResultCard = () => {
               </div>
 
               {/* COPY BUTTON */}
-              {newURL && (
+              {hasResult && (
                 <button
                   onClick={() => copyToClipboard(shortUrl, 'result-card')}
                   className="shrink-0 flex items-center justify-center gap-2 bg-[#1C1917] hover:bg-[#332E2B] px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-colors cursor-pointer rounded-none"
