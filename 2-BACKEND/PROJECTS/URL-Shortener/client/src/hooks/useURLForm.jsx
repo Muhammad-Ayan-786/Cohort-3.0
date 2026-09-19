@@ -8,7 +8,7 @@ export const useURLForm = () => {
   const [activeState, setActiveState] = useState('Standard')
 
   const inputRef = useRef(null)
-  const initialUrl = 'https://theatlantic.com/magazine/archive/2024/05/the-architecture-of-solitude'
+  const initialUrl = 'https://shorten.url/demo/dispatch?source=link-ledger'
 
 
   // Handle Segmented Control Switch
@@ -23,6 +23,7 @@ export const useURLForm = () => {
     try {
 
       const postedData = await postLinkAPI(url)
+      console.log(postedData);
 
       setNewURL(postedData)
       setError(null)
@@ -44,7 +45,7 @@ export const useURLForm = () => {
 
     setIsLoading(true)
     setActiveState('Shortening...')
-
+    console.log(inputRef.current.value);
     const isSuccessful = await postLink(inputRef.current.value)
     setActiveState(isSuccessful ? 'Standard' : 'Error Trigger')
   }

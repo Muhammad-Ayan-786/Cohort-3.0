@@ -141,7 +141,6 @@ const YourLinks = () => {
                 <EmptyStateUI links={links} />
               ) : (
                 links.map((item) => {
-                  // const shortUrl = `http://localhost:3000/${item.shortCode}`
                   const shortUrl = `${import.meta.env.VITE_BACKEND_URL}/${item.shortCode}`
                   const domain = new URL(item.originalUrl).hostname.replace('www.', '')
 
