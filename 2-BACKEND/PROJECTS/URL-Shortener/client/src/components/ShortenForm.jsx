@@ -22,13 +22,13 @@ const ShortenForm = () => {
           </div>
 
           {/* Segmented Control Switch */}
-          <div className="flex w-full items-center rounded-md border border-[#DCD6CC] bg-[#FAF8F5] p-0.5 sm:w-auto">
+          <div className="grid w-full grid-cols-3 rounded-md border border-[#DCD6CC] bg-[#FAF8F5] p-0.5 sm:flex sm:w-auto">
             {['Standard', 'Shortening...', 'Error Trigger'].map((state) => {
               const isActive = activeState === state
               return (
                 <button
                   key={state}
-                  className={`flex-1 whitespace-nowrap rounded-md px-3.5 py-2 font-mono text-[10px] font-bold tracking-wider uppercase transition-all duration-150 sm:flex-none ${isActive
+                  className={`min-w-0 rounded-md px-1.5 py-2 font-mono text-[9px] font-bold leading-tight tracking-[0.08em] uppercase transition-all duration-150 sm:flex-none sm:px-3.5 sm:text-[10px] sm:tracking-wider ${isActive
                     ? 'bg-[#1C1917] text-white shadow-sm'
                     : 'text-[#4C4039] hover:bg-[#EFECE6] hover:text-[#1C1917]'
                     }`}

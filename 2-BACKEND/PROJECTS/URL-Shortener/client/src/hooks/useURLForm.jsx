@@ -23,7 +23,6 @@ export const useURLForm = () => {
     try {
 
       const postedData = await postLinkAPI(url)
-      console.log(postedData);
 
       setNewURL(postedData)
       setError(null)
@@ -45,7 +44,6 @@ export const useURLForm = () => {
 
     setIsLoading(true)
     setActiveState('Shortening...')
-    console.log(inputRef.current.value);
     const isSuccessful = await postLink(inputRef.current.value)
     setActiveState(isSuccessful ? 'Standard' : 'Error Trigger')
   }
