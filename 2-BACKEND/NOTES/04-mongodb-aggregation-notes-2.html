@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MongoDB Aggregation — From Beginner to Industry Level</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D1712;
+  --bg-elevated:#131F19;
+  --bg-elevated-2:#182620;
+  --bg-inset:#0A0F0C;
+  --border:#213028;
+  --border-soft:#182420;
+  --text:#E9F2EC;
+  --text-dim:#93A99D;
+  --text-faint:#5C6E64;
+  --accent:#00ED64;
+  --accent-strong:#00C956;
+  --accent-dim:#0F3323;
+  --warn:#F5A623;
+  --warn-dim:#3A2C10;
+  --danger:#FF6B6B;
+  --danger-dim:#3A1717;
+  --info:#5EC8D8;
+  --info-dim:#0F2E33;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  --sidebar-w:272px;
+  --maxw:760px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}}
+body{
+  margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.2;margin:0;color:var(--text);}
+h1{font-size:clamp(2rem,4vw,2.75rem);letter-spacing:-0.01em;}
+h2{font-size:1.85rem;letter-spacing:-0.005em;}
+h3{font-size:1.3rem;margin-top:2.25rem;}
+h4{font-size:1.05rem;color:var(--text);}
+p{margin:0.75rem 0;color:var(--text-dim);max-width:72ch;}
+strong{color:var(--text);font-weight:600;}
+code{font-family:var(--font-mono);}
+a{color:var(--accent);}
+::selection{background:var(--accent-dim);color:var(--accent);}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;}
+
+/* ---------- progress bar ---------- */
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0%;z-index:100;transition:width .15s ease-out;box-shadow:0 0 8px rgba(0,237,100,.5);}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--bg-elevated);border-right:1px solid var(--border);
+  overflow-y:auto;padding:22px 14px 40px;z-index:50;
+}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:4px 10px 18px;border-bottom:1px solid var(--border-soft);margin-bottom:14px;}
+.sidebar-brand .leaf{width:26px;height:26px;flex:none;}
+.sidebar-brand-text{font-family:var(--font-display);font-weight:600;font-size:0.95rem;color:var(--text);line-height:1.25;}
+.sidebar-brand-text span{display:block;font-family:var(--font-mono);font-size:0.68rem;color:var(--accent);letter-spacing:0.03em;}
+.toc-group-label{font-size:0.68rem;color:var(--text-faint);padding:14px 10px 6px;font-weight:600;letter-spacing:0.04em;}
+.sidebar nav a{
+  display:flex;gap:9px;align-items:baseline;padding:6.5px 10px;border-radius:7px;
+  color:var(--text-dim);text-decoration:none;font-size:0.85rem;
+  border-left:2px solid transparent;transition:background .12s,color .12s;
+}
+.sidebar nav a:hover{background:var(--bg-elevated-2);color:var(--text);}
+.sidebar nav a.active{color:var(--accent);background:var(--accent-dim);border-left-color:var(--accent);}
+.sidebar nav a .n{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);min-width:18px;}
+.sidebar nav a.active .n{color:var(--accent);}
+.sidebar-progress{margin-top:16px;padding:12px 10px;border-top:1px solid var(--border-soft);}
+.sidebar-progress-label{font-size:0.68rem;color:var(--text-faint);display:flex;justify-content:space-between;margin-bottom:6px;}
+.sidebar-progress-track{height:5px;background:var(--bg-inset);border-radius:3px;overflow:hidden;}
+.sidebar-progress-fill{height:100%;background:var(--accent);width:0%;transition:width .2s;}
+
+.menu-toggle{display:none;}
+
+/* ---------- main layout ---------- */
+main{margin-left:var(--sidebar-w);padding:64px 48px 120px;}
+.content{max-width:var(--maxw);margin:0 auto;}
+.hero{max-width:840px;margin:0 auto 8px;}
+.eyebrow{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);margin-bottom:14px;}
+.definition-box{
+  margin:28px auto 0;max-width:840px;background:var(--bg-elevated);border:1px solid var(--border);
+  border-left:3px solid var(--accent);border-radius:10px;padding:22px 26px;
+}
+.definition-box p{color:var(--text);font-size:1.08rem;font-family:var(--font-display);font-weight:500;line-height:1.55;margin:0;max-width:none;}
+
+section.chapter{padding-top:56px;margin-top:56px;border-top:1px solid var(--border-soft);scroll-margin-top:30px;}
+section.chapter:first-of-type{border-top:none;}
+.chapter-kicker{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.chapter-num{font-family:var(--font-mono);color:var(--text-faint);font-size:0.85rem;}
+.chapter-sub{color:var(--text-faint);font-size:0.95rem;margin-top:8px;}
+
+/* ---------- cards / boxes ---------- */
+.card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin:18px 0;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:760px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+.note{display:flex;gap:12px;background:var(--info-dim);border:1px solid #1B4750;border-radius:10px;padding:14px 16px;margin:18px 0;}
+.note .ic{flex:none;color:var(--info);font-size:1.1rem;}
+.note p{color:#BFE7EC;margin:0;font-size:0.93rem;}
+.warn-box{display:flex;gap:12px;background:var(--warn-dim);border:1px solid #6b4e12;border-radius:10px;padding:14px 16px;margin:18px 0;}
+.warn-box .ic{flex:none;color:var(--warn);font-size:1.1rem;}
+.warn-box p{color:#F3D9A8;margin:0;font-size:0.93rem;}
+.danger-box{display:flex;gap:12px;background:var(--danger-dim);border:1px solid #6b2424;border-radius:10px;padding:14px 16px;margin:18px 0;}
+.danger-box .ic{flex:none;color:var(--danger);font-size:1.1rem;}
+.danger-box p{color:#F5C6C6;margin:0;font-size:0.93rem;}
+
+/* ---------- pills / badges ---------- */
+.stage-badge{
+  display:inline-flex;align-items:center;font-family:var(--font-mono);font-weight:600;
+  background:var(--accent-dim);color:var(--accent);border:1px solid #1c5b3a;
+  border-radius:6px;padding:3px 10px;font-size:0.85rem;
+}
+.pill{display:inline-block;font-family:var(--font-mono);font-size:0.75rem;padding:2px 9px;border-radius:20px;background:var(--bg-elevated-2);color:var(--text-dim);border:1px solid var(--border);}
+
+/* ---------- explanation tabs ---------- */
+.explain-tabs{display:flex;gap:6px;margin:18px 0 0;border-bottom:1px solid var(--border);}
+.explain-tab-btn{
+  font-family:var(--font-body);font-weight:600;font-size:0.83rem;color:var(--text-faint);
+  background:none;border:none;padding:9px 4px;cursor:pointer;border-bottom:2px solid transparent;margin-right:16px;
+}
+.explain-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.explain-panel{display:none;padding:14px 0 4px;}
+.explain-panel.active{display:block;}
+
+/* ---------- code blocks ---------- */
+.code-block{background:var(--bg-inset);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0;}
+.code-block-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg-elevated-2);border-bottom:1px solid var(--border);}
+.code-block-head .lbl{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);display:flex;align-items:center;gap:8px;}
+.dot-row{display:flex;gap:5px;}
+.dot-row span{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.copy-btn{
+  font-family:var(--font-mono);font-size:0.72rem;color:var(--text-dim);background:var(--bg-inset);
+  border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;
+}
+.copy-btn:hover{color:var(--accent);border-color:var(--accent);}
+.code-block pre{margin:0;padding:16px;overflow-x:auto;}
+.code-block code{font-family:var(--font-mono);font-size:0.84rem;line-height:1.6;color:#C7D6CD;white-space:pre;}
+.tok-comment{color:var(--text-faint);font-style:italic;}
+.tok-string{color:#8FD99F;}
+.tok-number{color:#E8B36A;}
+.tok-op{color:var(--accent);}
+.tok-keyword{color:#7FB4E8;}
+
+/* ---------- pipeline flow diagram ---------- */
+.flow-diagram{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:22px 4px;margin:20px 0;}
+.flow-node{
+  flex:none;min-width:118px;background:var(--bg-elevated);border:1px solid var(--border);
+  border-radius:10px;padding:14px 12px;text-align:center;
+}
+.flow-node.is-start,.flow-node.is-end{border-color:var(--accent);background:var(--accent-dim);}
+.flow-node .fn-label{font-family:var(--font-mono);font-size:0.78rem;color:var(--text);font-weight:600;}
+.flow-node .fn-sub{font-size:0.7rem;color:var(--text-faint);margin-top:3px;}
+.flow-arrow{flex:none;width:44px;display:flex;align-items:center;justify-content:center;position:relative;}
+.flow-arrow svg{width:40px;height:14px;}
+.flow-arrow path{stroke:var(--border);stroke-width:2;fill:none;}
+.flow-arrow polygon{fill:var(--border);}
+.flow-diagram.is-lit .flow-arrow path{stroke:var(--accent);}
+.flow-diagram.is-lit .flow-arrow polygon{fill:var(--accent);}
+
+/* ---------- stage demo (before/after) ---------- */
+.stage-demo{display:flex;align-items:stretch;gap:14px;margin:18px 0;flex-wrap:wrap;}
+.demo-panel{flex:1 1 240px;min-width:220px;background:var(--bg-inset);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:opacity .35s ease,transform .35s ease;}
+.demo-panel.is-hidden{opacity:0.25;filter:blur(1px);}
+.demo-panel-label{font-family:var(--font-mono);font-size:0.7rem;color:var(--text-faint);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg-elevated-2);}
+.demo-panel pre{margin:0;padding:12px;max-height:280px;overflow:auto;}
+.demo-panel code{font-family:var(--font-mono);font-size:0.78rem;color:#C7D6CD;white-space:pre;}
+.demo-mid{flex:none;width:100%;max-width:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+@media(max-width:640px){.demo-mid{max-width:none;flex-direction:row;justify-content:center;}}
+.run-btn{
+  font-family:var(--font-mono);font-size:0.76rem;font-weight:600;color:var(--bg);background:var(--accent);
+  border:none;border-radius:20px;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:transform .12s,opacity .12s;
+}
+.run-btn:hover{transform:translateY(-1px);}
+.run-btn:disabled{background:var(--bg-elevated-2);color:var(--accent);opacity:0.9;cursor:default;transform:none;}
+.demo-arrow-ic{color:var(--text-faint);font-size:1.1rem;}
+.stage-demo.is-run .demo-arrow-ic{color:var(--accent);}
+
+/* ---------- collapsible ---------- */
+details.collapse{background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;margin:16px 0;overflow:hidden;}
+details.collapse summary{cursor:pointer;padding:12px 16px;font-weight:600;font-size:0.9rem;color:var(--text);list-style:none;display:flex;align-items:center;gap:8px;}
+details.collapse summary::-webkit-details-marker{display:none;}
+details.collapse summary:before{content:"▸";color:var(--accent);transition:transform .15s;}
+details.collapse[open] summary:before{transform:rotate(90deg);}
+details.collapse .collapse-body{padding:0 16px 16px;color:var(--text-dim);font-size:0.92rem;}
+
+/* ---------- tables ---------- */
+table.data-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:0.88rem;}
+table.data-table th{text-align:left;color:var(--text-faint);font-family:var(--font-mono);font-weight:600;font-size:0.72rem;padding:9px 12px;border-bottom:1px solid var(--border);}
+table.data-table td{padding:11px 12px;border-bottom:1px solid var(--border-soft);color:var(--text-dim);vertical-align:top;}
+table.data-table td code,table.data-table td .stage-badge{font-size:0.8rem;}
+table.data-table tr:hover td{background:var(--bg-elevated);}
+
+/* ---------- comparison ---------- */
+.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;margin:20px 0;}
+.vs-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.vs-card h4{color:var(--accent);}
+.vs-divider{display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-family:var(--font-mono);font-size:0.8rem;}
+@media(max-width:700px){.vs-wrap{grid-template-columns:1fr;}.vs-divider{padding:4px 0;}}
+
+/* ---------- playground ---------- */
+.playground{background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:22px;margin:22px 0;}
+.pg-steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.pg-step-btn{
+  font-family:var(--font-mono);font-size:0.8rem;color:var(--text-dim);background:var(--bg-inset);
+  border:1px solid var(--border);border-radius:8px;padding:8px 13px;cursor:pointer;transition:.12s;
+}
+.pg-step-btn:hover{border-color:var(--accent);color:var(--text);}
+.pg-step-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+.pg-blurb{color:var(--text-dim);font-size:0.9rem;margin:0 0 14px;min-height:22px;}
+.pg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:900px){.pg-grid{grid-template-columns:1fr;}}
+.pg-col{background:var(--bg-inset);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.pg-col-head{padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);}
+.pg-col.op .pg-col-head{color:var(--accent);}
+.pg-col pre{margin:0;padding:12px;max-height:320px;overflow:auto;}
+.pg-col code{font-family:var(--font-mono);font-size:0.76rem;color:#C7D6CD;white-space:pre;}
+.pg-op-desc{padding:14px;font-size:0.88rem;color:var(--text-dim);}
+
+/* ---------- challenge ---------- */
+.challenge{background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin:16px 0;}
+.challenge-q{font-weight:600;color:var(--text);margin-bottom:10px;}
+.reveal-btn{
+  font-family:var(--font-mono);font-size:0.78rem;font-weight:600;color:var(--bg);background:var(--warn);
+  border:none;border-radius:20px;padding:7px 14px;cursor:pointer;margin-top:8px;
+}
+.challenge-answer{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);}
+.challenge-answer.shown{display:block;}
+.challenge-answer .verdict{font-family:var(--font-mono);font-size:0.78rem;color:var(--accent);margin-bottom:8px;}
+
+/* ---------- footer ---------- */
+.page-footer{max-width:var(--maxw);margin:80px auto 0;padding-top:24px;border-top:1px solid var(--border-soft);color:var(--text-faint);font-size:0.85rem;}
+
+/* ---------- misc ---------- */
+ul.check-list{list-style:none;margin:14px 0;padding:0;}
+ul.check-list li{padding-left:26px;position:relative;color:var(--text-dim);margin:8px 0;font-size:0.94rem;}
+ul.check-list li:before{content:"✕";position:absolute;left:0;color:var(--danger);font-size:0.8rem;top:2px;}
+ul.check-list.good li:before{content:"✓";color:var(--accent);}
+.field{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:0.9rem;}
+.field .k{font-family:var(--font-mono);color:var(--accent);min-width:118px;flex:none;}
+.field .v{color:var(--text-dim);}
+
+@media(max-width:900px){
+  :root{--sidebar-w:0px;}
+  .sidebar{transform:translateX(-100%);transition:transform .2s ease;width:280px;box-shadow:0 0 40px rgba(0,0,0,.5);}
+  .sidebar.open{transform:translateX(0);}
+  main{margin-left:0;padding:60px 20px 100px;}
+  .menu-toggle{
+    display:flex;position:fixed;top:14px;left:14px;z-index:60;align-items:center;gap:8px;
+    background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:9px 12px;
+    color:var(--text);font-family:var(--font-mono);font-size:0.78rem;cursor:pointer;
+  }
+  .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:45;}
+  .sidebar-backdrop.show{display:block;}
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<button class="menu-toggle" id="menuToggle">☰ Contents</button>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <svg class="leaf" viewBox="0 0 24 24" fill="none"><path d="M12 2C9 6 6 9 6 14a6 6 0 0012 0c0-5-3-8-6-12z" stroke="#00ED64" stroke-width="1.6"/><path d="M12 6v16" stroke="#00ED64" stroke-width="1.6"/></svg>
+    <div class="sidebar-brand-text">Aggregation<span>MongoDB × Node.js</span></div>
+  </div>
+  <nav id="tocNav">
+    <div class="toc-group-label">Foundations</div>
+    <a href="#s1"><span class="n">01</span>What Is Aggregation?</a>
+    <a href="#s2"><span class="n">02</span>find() vs aggregate()</a>
+    <a href="#s3"><span class="n">03</span>The Pipeline</a>
+    <a href="#s4"><span class="n">04</span>Playground</a>
+    <div class="toc-group-label">Core Stages</div>
+    <a href="#s5"><span class="n">05</span>$match</a>
+    <a href="#s6"><span class="n">06</span>$project</a>
+    <a href="#s7"><span class="n">07</span>$sort</a>
+    <a href="#s8"><span class="n">08</span>$limit &amp; $skip</a>
+    <a href="#s9"><span class="n">09</span>$lookup</a>
+    <a href="#s10"><span class="n">10</span>$unwind</a>
+    <a href="#s11"><span class="n">11</span>$group</a>
+    <a href="#s12"><span class="n">12</span>Other Stages</a>
+    <a href="#s13"><span class="n">13</span>Operators</a>
+    <div class="toc-group-label">Applied</div>
+    <a href="#s14"><span class="n">14</span>Discord Clone Example</a>
+    <a href="#s15"><span class="n">15</span>Mongoose Code</a>
+    <a href="#s16"><span class="n">16</span>vs populate()</a>
+    <a href="#s17"><span class="n">17</span>Performance</a>
+    <a href="#s18"><span class="n">18</span>Common Mistakes</a>
+    <div class="toc-group-label">Practice</div>
+    <a href="#s19"><span class="n">19</span>Mini Challenges</a>
+    <a href="#s20"><span class="n">20</span>Cheat Sheet</a>
+    <a href="#s21"><span class="n">21</span>Mental Model</a>
+  </nav>
+  <div class="sidebar-progress">
+    <div class="sidebar-progress-label"><span>Progress</span><span id="progressPct">0%</span></div>
+    <div class="sidebar-progress-track"><div class="sidebar-progress-fill" id="progressFill"></div></div>
+  </div>
+</aside>
+
+<main>
+<div class="content">
+
+  <div class="hero">
+    <div class="eyebrow">// interactive course · node.js + mongoose</div>
+    <h1>MongoDB Aggregation — From Beginner to Industry Level</h1>
+    <p style="font-size:1.05rem;margin-top:14px;">A hands-on walkthrough for JavaScript developers, built around a Discord‑style messages and users collection. Every stage runs live in your browser against real sample data — click through it instead of just reading about it.</p>
+  </div>
+
+  <div class="definition-box">
+    <p>“MongoDB Aggregation is a pipeline that processes documents step‑by‑step to filter, combine, transform, group, sort, and calculate data.”</p>
+  </div>
+
+  <!-- ================= SECTION 1 ================= -->
+  <section class="chapter" id="s1">
+    <div class="chapter-kicker"><span class="chapter-num">01</span><span class="stage-badge">concept</span></div>
+    <h2>What Is MongoDB Aggregation?</h2>
+    <p class="chapter-sub">The idea, in plain language, before any syntax.</p>
+
+    <p>Imagine your <code>messages</code> collection as a big pile of raw documents sitting in the database. Most of the time you just want to <em>fetch</em> some of them — that's what <code>find()</code> is for. But sometimes you need to actually <strong>reshape</strong> that data: count how many messages each user sent, attach the sender's profile picture to every message, or return only the three fields the frontend actually needs.</p>
+    <p>That reshaping job belongs to the <strong>aggregation pipeline</strong>. You describe a series of steps — called <strong>stages</strong> — and MongoDB runs your documents through every stage in order, like an assembly line. Each stage does one clear job: filter, reshape, join, group, sort. What comes out of one stage becomes the input for the next.</p>
+
+    <div class="flow-diagram" id="introFlow">
+      <div class="flow-node is-start"><div class="fn-label">Collection</div><div class="fn-sub">6 messages</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Stage 1</div><div class="fn-sub">$match</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Stage 2</div><div class="fn-sub">$lookup</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Stage 3</div><div class="fn-sub">$project</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node is-end"><div class="fn-label">Result</div><div class="fn-sub">frontend-ready</div></div>
+    </div>
+    <p style="text-align:center;font-size:0.8rem;color:var(--text-faint);margin-top:-8px;">hover any node — this diagram lights up on its own once, on load</p>
+
+    <h3>Why does aggregation exist at all?</h3>
+    <p>Without it, you'd have to fetch raw documents with <code>find()</code> and then write JavaScript to filter, join, and reshape them in your Node.js server — pulling far more data over the wire than you need, and doing database-shaped work outside the database. Aggregation pushes that work down into MongoDB itself, where it can use indexes and run close to the data.</p>
+
+    <h3>Querying data vs. processing data</h3>
+    <div class="vs-wrap">
+      <div class="vs-card">
+        <h4>Querying — find()</h4>
+        <p style="margin:0;">"Give me the documents that match this condition." The shape of each document coming back is the same shape it has in the database.</p>
+      </div>
+      <div class="vs-divider">vs</div>
+      <div class="vs-card">
+        <h4>Processing — aggregate()</h4>
+        <p style="margin:0;">"Give me new, transformed documents, computed from the originals." The shape of the output can be completely different from the shape in the database.</p>
+      </div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p><strong>Beginner mental model:</strong> think of aggregation like a kitchen assembly line for your data. Raw ingredients (documents) go in one end; each station (stage) does one job — wash, chop, cook, plate — and a finished dish (the result) comes out the other end.</p></div>
+  </section>
+
+  <!-- ================= SECTION 2 ================= -->
+  <section class="chapter" id="s2">
+    <div class="chapter-kicker"><span class="chapter-num">02</span><span class="stage-badge">comparison</span></div>
+    <h2>find() vs aggregate()</h2>
+    <p class="chapter-sub">Two different tools for two different jobs — knowing which to reach for matters.</p>
+
+    <div class="vs-wrap">
+      <div class="vs-card">
+        <h4>find() / findOne()</h4>
+        <p style="margin:0 0 10px;">Retrieves documents as-is. Great for simple lookups, single-document fetches, and cases where the document's existing shape is already what you need.</p>
+      </div>
+      <div class="vs-divider">vs</div>
+      <div class="vs-card">
+        <h4>aggregate()</h4>
+        <p style="margin:0 0 10px;">Runs documents through a pipeline of stages to filter, join, reshape, group, and compute. Great when the answer isn't a document that already exists — it has to be built.</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>mongoose — find()</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">// get all messages in one channel — shape stays the same
+const messages = await messageModel.find({ channel: channelId });
+
+// get a single user
+const user = await userModel.findOne({ _id: userId });
+
+// find() + populate() to pull in a referenced document
+const withAuthor = await messageModel
+  .find({ channel: channelId })
+  .populate("author", "username profile_pic");</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>mongoose — aggregate()</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">// build a *new* shape: message count per user, sorted, top 5
+const leaderboard = await messageModel.aggregate([
+  { $group: { _id: "$author", total: { $sum: 1 } } },
+  { $sort: { total: -1 } },
+  { $limit: 5 }
+]);</code></pre>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Method</th><th>Use it when…</th></tr></thead>
+      <tbody>
+        <tr><td><code>find()</code></td><td>You want a list of documents matching a filter, in (roughly) their original shape.</td></tr>
+        <tr><td><code>findOne()</code></td><td>You want exactly one document — a user by id, a message by id.</td></tr>
+        <tr><td><code>populate()</code></td><td>You want to attach one referenced document (or a few) onto results from <code>find()</code>, without needing grouping, joins across multiple relations, or computed fields.</td></tr>
+        <tr><td><code>aggregate()</code></td><td>You need filtering <em>and</em> joining <em>and</em> reshaping <em>and</em>/or computing values — counts, sums, groupings — in a single database round-trip.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warn-box"><div class="ic">▲</div><p><strong>Aggregation is not just a fancier find().</strong> It's a different tool with a real cost: every stage does work, and stages like <code>$lookup</code> and <code>$group</code> can be expensive on large collections. Reach for <code>find()</code> first; reach for <code>aggregate()</code> when <code>find()</code> genuinely can't produce the shape you need.</p></div>
+  </section>
+
+  <!-- ================= SECTION 3 ================= -->
+  <section class="chapter" id="s3">
+    <div class="chapter-kicker"><span class="chapter-num">03</span><span class="stage-badge">concept</span></div>
+    <h2>The Aggregation Pipeline</h2>
+    <p class="chapter-sub">It's just an array. That's the whole trick.</p>
+
+    <p><code>.aggregate()</code> takes a single argument: an <strong>array of stage objects</strong>. Each object has exactly one key — the stage's operator name, like <code>$match</code> or <code>$lookup</code> — and MongoDB runs them top to bottom, in the order you wrote them.</p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>mongoose</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">Model.aggregate([
+  { $match: { channel: channelId } },
+  { $lookup: { from: "users", localField: "author", foreignField: "_id", as: "author" } },
+  { $project: { content: 1, "author.username": 1 } }
+]);</code></pre>
+    </div>
+
+    <h3>The output of one stage is the input of the next</h3>
+    <p>This is the single most important thing to internalize about aggregation. <code>$match</code> doesn't know or care that <code>$lookup</code> comes after it — it just filters whatever documents it receives and passes the survivors forward. <code>$lookup</code> then receives <em>only those survivors</em>, joins each one, and passes its own output forward again.</p>
+
+    <div class="flow-diagram">
+      <div class="flow-node is-start"><div class="fn-label">6 docs</div><div class="fn-sub">in</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$match</div><div class="fn-sub">→ 4 docs</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$lookup</div><div class="fn-sub">→ 4 docs</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$project</div><div class="fn-sub">→ 4 docs</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node is-end"><div class="fn-label">Result</div></div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p>Notice the document <em>count</em> can change at almost any stage — <code>$match</code> and <code>$limit</code> shrink it, <code>$unwind</code> can grow it, <code>$group</code> collapses it entirely into new summary documents. The pipeline in section 4 lets you watch this happen in real time.</p></div>
+  </section>
+
+  <!-- ================= SECTION 4 ================= -->
+  <section class="chapter" id="s4">
+    <div class="chapter-kicker"><span class="chapter-num">04</span><span class="stage-badge">interactive</span></div>
+    <h2>Interactive Pipeline Playground</h2>
+    <p class="chapter-sub">Real sample data, a real (simplified) aggregation engine, running in your browser.</p>
+
+    <p>Below is our sample dataset — a tiny Discord-style <code>messages</code> collection and a <code>users</code> collection. Click through each stage of the pipeline below and watch the <strong>Input</strong>, the <strong>Operation</strong>, and the <strong>Output</strong> update live. Each stage's output becomes the next stage's input, exactly like in real MongoDB.</p>
+
+    <div class="grid-2">
+      <div class="code-block">
+        <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>messages collection</span></div>
+        <pre><code data-lang="js" id="rawMessages"></code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>users collection</span></div>
+        <pre><code data-lang="js" id="rawUsers"></code></pre>
+      </div>
+    </div>
+
+    <div class="playground" id="playground">
+      <div class="pg-steps" id="pgSteps"></div>
+      <p class="pg-blurb" id="pgBlurb"></p>
+      <div class="pg-grid">
+        <div class="pg-col"><div class="pg-col-head">INPUT — into this stage</div><pre><code id="pgInput"></code></pre></div>
+        <div class="pg-col op"><div class="pg-col-head">OPERATION</div><div class="pg-op-desc" id="pgOp"></div></div>
+        <div class="pg-col"><div class="pg-col-head">OUTPUT — passed to next stage</div><pre><code id="pgOutput"></code></pre></div>
+      </div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p>This playground builds toward the full Discord message-feed pipeline covered in depth in section 14 — filter by channel, attach the author, flatten it, then keep only the fields the frontend needs.</p></div>
+  </section>
+
+  <!-- ================= SECTION 5 ================= -->
+  <section class="chapter" id="s5">
+    <div class="chapter-kicker"><span class="chapter-num">05</span><span class="stage-badge">$match</span></div>
+    <h2>$match — Filtering Documents</h2>
+    <p class="chapter-sub">The aggregation equivalent of a find() filter.</p>
+
+    <div class="explain-tabs" data-tabs="s5t">
+      <button class="explain-tab-btn active" data-tab="beg">Beginner explanation</button>
+      <button class="explain-tab-btn" data-tab="tech">Technical explanation</button>
+    </div>
+    <div class="explain-panel active" data-panel="beg" data-group="s5t"><p><code>$match</code> looks at every document coming into the stage and keeps only the ones that pass a condition — everything else is thrown away. It works almost exactly like the object you'd pass to <code>find()</code>.</p></div>
+    <div class="explain-panel" data-panel="tech" data-group="s5t"><p><code>$match</code> filters the document stream using standard MongoDB query operators (<code>$eq</code>, <code>$gt</code>, <code>$in</code>, etc.) and, where possible, is optimized by the query planner the same way a normal query would be — including index usage — provided it isn't preceded by a stage that reshapes the documents.</p></div>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">{ $match: { channel: "c1" } }
+{ $match: { author: "u1", channel: "c2" } }        // AND (implicit)
+{ $match: { $or: [ { channel: "c1" }, { channel: "c2" } ] } }</code></pre>
+    </div>
+
+    <h3>Before / after — keep only channel c1</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$match":{"channel":"c1"}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After</div><pre><code></code></pre></div>
+    </div>
+
+    <h3>Before / after — only Ritik's (u1) messages</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$match":{"author":"u1"}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After</div><pre><code></code></pre></div>
+    </div>
+
+    <div class="warn-box"><div class="ic">▲</div><p><strong>Put $match early, as often as possible.</strong> If you filter first, every later stage — especially expensive ones like <code>$lookup</code> — has fewer documents to process. Placing <code>$match</code> late means you did all that work for documents you were about to discard anyway. A <code>$match</code> at the very start of the pipeline can also use an index; one placed after a reshaping stage usually can't.</p></div>
+  </section>
+
+  <!-- ================= SECTION 6 ================= -->
+  <section class="chapter" id="s6">
+    <div class="chapter-kicker"><span class="chapter-num">06</span><span class="stage-badge">$project</span></div>
+    <h2>$project — Shaping the Output</h2>
+    <p class="chapter-sub">Choose which fields survive, rename them, or compute new ones.</p>
+
+    <div class="explain-tabs" data-tabs="s6t">
+      <button class="explain-tab-btn active" data-tab="beg">Beginner explanation</button>
+      <button class="explain-tab-btn" data-tab="tech">Technical explanation</button>
+    </div>
+    <div class="explain-panel active" data-panel="beg" data-group="s6t"><p><code>$project</code> decides what the output document looks like — which fields to keep, which to drop, and what to rename them to. Think of it as picking exactly which columns make it into your API response.</p></div>
+    <div class="explain-panel" data-panel="tech" data-group="s6t"><p><code>$project</code> takes a specification object. <code>1</code> includes a field, <code>0</code> excludes it, a dot-path like <code>"author.username"</code> reaches into a nested/joined field, and a value can also be an expression object to compute a brand-new field. You generally can't mix inclusion (<code>1</code>) and exclusion (<code>0</code>) in the same <code>$project</code>, except for <code>_id</code>.</p></div>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">// inclusion — keep only these fields (plus _id, unless excluded)
+{ $project: { content: 1, channel: 1, _id: 0 } }
+
+// exclusion — drop just these fields, keep everything else
+{ $project: { __v: 0 } }
+
+// reach into a nested/joined field
+{ $project: { content: 1, "author.username": 1 } }</code></pre>
+    </div>
+
+    <h3>Before / after — keep only content + channel</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$project":{"content":1,"channel":1}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After</div><pre><code></code></pre></div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p><strong>Calculated fields:</strong> instead of <code>1</code> or <code>0</code>, give a field an expression, e.g. <code>{ preview: { $substrCP: ["$content", 0, 20] } }</code> to compute a 20-character preview of a message on the fly — no field like that exists in the database, <code>$project</code> builds it.</p></div>
+  </section>
+
+  <!-- ================= SECTION 7 ================= -->
+  <section class="chapter" id="s7">
+    <div class="chapter-kicker"><span class="chapter-num">07</span><span class="stage-badge">$sort</span></div>
+    <h2>$sort — Ordering Documents</h2>
+    <p class="chapter-sub">1 for ascending, -1 for descending. That's the entire syntax.</p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">{ $sort: { createdAt: -1 } }   // newest messages first
+{ $sort: { createdAt: 1 } }    // oldest messages first
+{ $sort: { channel: 1, createdAt: -1 } }  // group by channel, newest first within each</code></pre>
+    </div>
+
+    <h3>Before / after — newest messages first</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$sort":{"createdAt":-1}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After</div><pre><code></code></pre></div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p>This is exactly how a real-time chat feed decides order — sort messages by <code>createdAt: -1</code> so the newest one renders at the top (or bottom, depending on your UI), then usually pair it with <code>$limit</code> to only pull the most recent N.</p></div>
+  </section>
+
+  <!-- ================= SECTION 8 ================= -->
+  <section class="chapter" id="s8">
+    <div class="chapter-kicker"><span class="chapter-num">08</span><span class="stage-badge">$limit / $skip</span></div>
+    <h2>$limit &amp; $skip — Pagination</h2>
+    <p class="chapter-sub">Two tiny stages that, combined with $sort, give you a page of results.</p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">Model.aggregate([
+  { $sort: { createdAt: -1 } },
+  { $skip: 20 },     // skip the first 20 (page 1)
+  { $limit: 20 }     // then take the next 20 (page 2)
+]);</code></pre>
+    </div>
+
+    <h3>Before / after — page 2 of a 2-per-page feed</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$skip":2}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before (already sorted)</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After $skip: 2</div><pre><code></code></pre></div>
+    </div>
+
+    <div class="warn-box"><div class="ic">▲</div><p><strong>Order matters — always $sort before $skip/$limit.</strong> Without a preceding <code>$sort</code>, MongoDB doesn't guarantee a stable document order, so "page 2" could silently return documents you already showed on page 1, or skip some entirely. The order <code>$sort → $skip → $limit</code> is the standard, safe pattern.</p></div>
+  </section>
+
+  <!-- ================= SECTION 9 ================= -->
+  <section class="chapter" id="s9">
+    <div class="chapter-kicker"><span class="chapter-num">09</span><span class="stage-badge">$lookup</span></div>
+    <h2>$lookup — MongoDB's Join</h2>
+    <p class="chapter-sub">Pulling in related documents from another collection, without leaving the database.</p>
+
+    <p>MongoDB is not a relational database — there's no built-in foreign key. But you'll constantly want to attach related data anyway: a message needs its author's username, an order needs its customer's address. <code>$lookup</code> is how you do that inside a pipeline. It's the closest thing MongoDB has to a SQL <code>LEFT JOIN</code> — no prior SQL knowledge required, though: think of it as "go fetch matching documents from another collection and attach them here."</p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">{
+  $lookup: {
+    from: "users",         // the collection to join against
+    localField: "author",  // field on THIS (messages) document
+    foreignField: "_id",   // field on the OTHER (users) document
+    as: "author"           // name of the new array field to store matches in
+  }
+}</code></pre>
+    </div>
+
+    <div class="grid-3">
+      <div class="card"><div class="field"><span class="k">from</span></div><p style="margin:0;font-size:0.88rem;">Which collection to search — <code>"users"</code>, not the Mongoose model name.</p></div>
+      <div class="card"><div class="field"><span class="k">localField</span></div><p style="margin:0;font-size:0.88rem;">The field on the <em>current</em> document that holds the reference — here, <code>author</code>.</p></div>
+      <div class="card"><div class="field"><span class="k">foreignField</span></div><p style="margin:0;font-size:0.88rem;">The field on the <em>other</em> collection's documents to match against — usually <code>_id</code>.</p></div>
+    </div>
+
+    <h3>Before / after — attach the author onto each message</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$lookup":{"from":"users","localField":"author","foreignField":"_id","as":"author"}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After</div><pre><code></code></pre></div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p><strong>Why does $lookup produce an array?</strong> MongoDB has no way to know in advance whether zero, one, or many documents in the foreign collection will match. So <code>as</code> is <em>always</em> an array — even when, like here, exactly one user matches. That's precisely why <code>$lookup</code> is almost always followed by <code>$unwind</code> when you know the relationship is really one-to-one.</p></div>
+  </section>
+
+  <!-- ================= SECTION 10 ================= -->
+  <section class="chapter" id="s10">
+    <div class="chapter-kicker"><span class="chapter-num">10</span><span class="stage-badge">$unwind</span></div>
+    <h2>$unwind — Flattening Arrays</h2>
+    <p class="chapter-sub">Turning one document with an array into many documents, one per array item.</p>
+
+    <p>An array field like the <code>author: [...]</code> that <code>$lookup</code> just produced is awkward to work with on the frontend — you'd have to write <code>message.author[0].username</code> everywhere. <code>$unwind</code> fixes that: for each item in the array, it creates a full copy of the document with that one item in place of the array.</p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">{ $unwind: "$author" }</code></pre>
+    </div>
+
+    <h3>Before / after — flatten the author array (run $lookup first, then $unwind)</h3>
+    <div class="stage-demo" data-before='DATA:lookedUp' data-stage='{"$unwind":"$author"}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before (post-$lookup)</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After $unwind</div><pre><code></code></pre></div>
+    </div>
+
+    <div class="note"><div class="ic">◆</div><p><strong>When is $unwind useful after $lookup?</strong> Whenever the relationship is one-to-one (or one-to-few and you specifically want one row per match) — e.g. one message has exactly one author. If a message could have many attachments and you wanted one output row per attachment, <code>$unwind</code> on <code>attachments</code> would do that too — the array can grow the document count, not just flatten it.</p></div>
+
+    <div class="warn-box"><div class="ic">▲</div><p><strong>Forgetting $unwind is one of the most common beginner mistakes</strong> after a $lookup — you'll end up sending the frontend <code>author: [{...}]</code> instead of <code>author: {...}</code>, and every UI component using it will break or need defensive array-indexing code.</p></div>
+  </section>
+
+  <!-- ================= SECTION 11 ================= -->
+  <section class="chapter" id="s11">
+    <div class="chapter-kicker"><span class="chapter-num">11</span><span class="stage-badge">$group</span></div>
+    <h2>$group — Grouping &amp; Summarizing</h2>
+    <p class="chapter-sub">Collapse many documents into one summary document per group.</p>
+
+    <div class="explain-tabs" data-tabs="s11t">
+      <button class="explain-tab-btn active" data-tab="beg">Beginner explanation</button>
+      <button class="explain-tab-btn" data-tab="tech">Technical explanation</button>
+    </div>
+    <div class="explain-panel active" data-panel="beg" data-group="s11t"><p>Imagine sorting a pile of messages into little buckets — one bucket per channel, or one per author. <code>$group</code> is that sorting, plus it lets you ask a question about each bucket at the same time: "how many messages are in this bucket?"</p></div>
+    <div class="explain-panel" data-panel="tech" data-group="s11t"><p><code>$group</code> takes an <code>_id</code> expression that defines the grouping key (a field reference, a computed expression, or <code>null</code> to group everything into one bucket) plus one or more accumulator expressions that run over every document in that group.</p></div>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>syntax</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">{
+  $group: {
+    _id: "$author",             // the grouping key
+    total: { $sum: 1 }          // count of docs in this group
+  }
+}</code></pre>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Accumulator</th><th>What it computes</th></tr></thead>
+      <tbody>
+        <tr><td><code>$sum</code></td><td>Total of a numeric field — or <code>$sum: 1</code> to simply count documents in the group.</td></tr>
+        <tr><td><code>$avg</code></td><td>Average of a numeric field across the group.</td></tr>
+        <tr><td><code>$min</code> / <code>$max</code></td><td>Smallest / largest value of a field in the group.</td></tr>
+        <tr><td><code>$push</code></td><td>Collects a value from every document into an array — duplicates included.</td></tr>
+        <tr><td><code>$addToSet</code></td><td>Same as <code>$push</code>, but drops duplicate values.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Discord example — messages per user</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$group":{"_id":"$author","total":{"$sum":1}}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After — one doc per author</div><pre><code></code></pre></div>
+    </div>
+
+    <h3>Discord example — messages per channel</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$group":{"_id":"$channel","total":{"$sum":1}}}'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Before</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Stage</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">After — one doc per channel</div><pre><code></code></pre></div>
+    </div>
+
+    <h3>Total messages in the whole server</h3>
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>mongoose</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">// _id: null → everything falls into ONE group
+const [result] = await messageModel.aggregate([
+  { $group: { _id: null, total: { $sum: 1 } } }
+]);
+// result -> { _id: null, total: 6 }</code></pre>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 12 ================= -->
+  <section class="chapter" id="s12">
+    <div class="chapter-kicker"><span class="chapter-num">12</span><span class="stage-badge">more stages</span></div>
+    <h2>Other Important Stages</h2>
+    <p class="chapter-sub">You'll reach for these less often, but often enough to know them.</p>
+
+    <details class="collapse" open>
+      <summary>$count — how many documents came out</summary>
+      <div class="collapse-body">
+        <p>Replaces the whole pipeline output with a single document holding a count.</p>
+        <div class="code-block"><div class="code-block-head"><span class="lbl">example</span></div><pre><code data-lang="js">{ $count: "totalMessages" }
+// -> { totalMessages: 6 }</code></pre></div>
+      </div>
+    </details>
+
+    <details class="collapse">
+      <summary>$addFields / $set — add new fields without dropping existing ones</summary>
+      <div class="collapse-body">
+        <p>Unlike <code>$project</code>, this keeps every existing field and just adds (or overwrites) the ones you specify. <code>$set</code> is a newer alias for <code>$addFields</code> — they behave identically.</p>
+        <div class="code-block"><div class="code-block-head"><span class="lbl">example</span></div><pre><code data-lang="js">{ $addFields: { isEdited: false, wordCount: { $size: { $split: ["$content", " "] } } } }</code></pre></div>
+      </div>
+    </details>
+
+    <details class="collapse">
+      <summary>$unset — drop specific fields (the opposite of $addFields)</summary>
+      <div class="collapse-body">
+        <p>A cleaner shorthand for excluding fields than writing a full <code>$project</code> just to remove one or two.</p>
+        <div class="code-block"><div class="code-block-head"><span class="lbl">example</span></div><pre><code data-lang="js">{ $unset: ["__v", "internalNotes"] }</code></pre></div>
+      </div>
+    </details>
+
+    <details class="collapse">
+      <summary>$facet — run several pipelines in parallel, on the same input</summary>
+      <div class="collapse-body">
+        <p>Useful for one round-trip that needs multiple different summaries — e.g. the paginated results <em>and</em> the total count, at once, for building "Page 2 of 14" UI.</p>
+        <div class="code-block"><div class="code-block-head"><span class="lbl">example</span></div><pre><code data-lang="js">{
+  $facet: {
+    results: [ { $skip: 20 }, { $limit: 20 } ],
+    totalCount: [ { $count: "count" } ]
+  }
+}</code></pre></div>
+      </div>
+    </details>
+
+    <details class="collapse">
+      <summary>$replaceRoot / $replaceWith — promote a nested object to be the whole document</summary>
+      <div class="collapse-body">
+        <p>Handy right after <code>$lookup</code> + <code>$unwind</code>, when you actually want the joined document itself to <em>become</em> the top-level result, instead of being nested under a field.</p>
+        <div class="code-block"><div class="code-block-head"><span class="lbl">example</span></div><pre><code data-lang="js">{ $replaceWith: "$author" }
+// document becomes exactly the author sub-document</code></pre></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ================= SECTION 13 ================= -->
+  <section class="chapter" id="s13">
+    <div class="chapter-kicker"><span class="chapter-num">13</span><span class="stage-badge">operators</span></div>
+    <h2>Expressions &amp; Operators</h2>
+    <p class="chapter-sub">The small building blocks used inside $match conditions and computed fields.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>$eq</code></td><td>Equal to</td><td><code>{ channel: { $eq: "c1" } }</code></td></tr>
+        <tr><td><code>$ne</code></td><td>Not equal to</td><td><code>{ author: { $ne: "u1" } }</code></td></tr>
+        <tr><td><code>$gt</code></td><td>Greater than</td><td><code>{ createdAt: { $gt: someDate } }</code></td></tr>
+        <tr><td><code>$gte</code></td><td>Greater than or equal to</td><td><code>{ score: { $gte: 50 } }</code></td></tr>
+        <tr><td><code>$lt</code></td><td>Less than</td><td><code>{ score: { $lt: 50 } }</code></td></tr>
+        <tr><td><code>$lte</code></td><td>Less than or equal to</td><td><code>{ score: { $lte: 50 } }</code></td></tr>
+        <tr><td><code>$and</code></td><td>All conditions must be true</td><td><code>{ $and: [{channel:"c1"},{author:"u1"}] }</code></td></tr>
+        <tr><td><code>$or</code></td><td>At least one condition must be true</td><td><code>{ $or: [{channel:"c1"},{channel:"c2"}] }</code></td></tr>
+        <tr><td><code>$in</code></td><td>Value is inside a given array</td><td><code>{ channel: { $in: ["c1","c2"] } }</code></td></tr>
+        <tr><td><code>$cond</code></td><td>Inline if / then / else, for computed fields</td><td><code>{ $cond: [{$gt:["$total",10]}, "active", "quiet"] }</code></td></tr>
+        <tr><td><code>$ifNull</code></td><td>Falls back to a default when a field is missing/null</td><td><code>{ $ifNull: ["$nickname", "$username"] }</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><div class="ic">◆</div><p>The <code>$eq</code>/<code>$gt</code>/etc. family works inside <code>$match</code> just like it does in <code>find()</code> — that consistency is intentional. <code>$cond</code> and <code>$ifNull</code> are different: they're <em>expressions</em>, mostly used inside <code>$project</code>, <code>$addFields</code>, or accumulators, to compute a value rather than filter a document.</p></div>
+  </section>
+
+  <!-- ================= SECTION 14 ================= -->
+  <section class="chapter" id="s14">
+    <div class="chapter-kicker"><span class="chapter-num">14</span><span class="stage-badge">applied</span></div>
+    <h2>Real Discord Clone Example</h2>
+    <p class="chapter-sub">Every stage covered so far, chained into one real feature: "load a channel's message feed."</p>
+
+    <div class="flow-diagram">
+      <div class="flow-node is-start"><div class="fn-label">Message</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$match</div><div class="fn-sub">channel</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$lookup</div><div class="fn-sub">User</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$unwind</div><div class="fn-sub">author</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$project</div><div class="fn-sub">fields</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$sort</div><div class="fn-sub">createdAt</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">$limit</div><div class="fn-sub">50</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node is-end"><div class="fn-label">Response</div></div>
+    </div>
+
+    <h3>Line by line</h3>
+    <table class="data-table">
+      <thead><tr><th>Stage</th><th>What it does here, specifically</th></tr></thead>
+      <tbody>
+        <tr><td><span class="stage-badge">$match</span></td><td>Throws away every message that isn't in the channel the user currently has open — the single biggest performance win in the whole pipeline.</td></tr>
+        <tr><td><span class="stage-badge">$lookup</span></td><td>For each remaining message, fetches the matching user from the <code>users</code> collection and attaches it as an <code>author</code> array.</td></tr>
+        <tr><td><span class="stage-badge">$unwind</span></td><td>Flattens that single-item <code>author</code> array into a plain object, since one message has exactly one author.</td></tr>
+        <tr><td><span class="stage-badge">$project</span></td><td>Strips the response down to only what the chat UI actually renders — no internal fields, no full user document.</td></tr>
+        <tr><td><span class="stage-badge">$sort</span></td><td>Orders messages newest-first so the feed renders chronologically.</td></tr>
+        <tr><td><span class="stage-badge">$limit</span></td><td>Caps it at 50 messages — you paginate further requests with <code>$skip</code> as the user scrolls up.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Run it live</h3>
+    <div class="stage-demo" data-before='DATA:messages' data-stage='{"$match":{"channel":"c1"}}' data-chain='[{"$match":{"channel":"c1"}},{"$lookup":{"from":"users","localField":"author","foreignField":"_id","as":"author"}},{"$unwind":"$author"},{"$project":{"content":1,"createdAt":1,"author.username":1,"author.profile_pic":1,"_id":0}},{"$sort":{"createdAt":-1}},{"$limit":50}]'>
+      <div class="demo-panel" data-role="before"><div class="demo-panel-label">Raw messages collection</div><pre><code></code></pre></div>
+      <div class="demo-mid"><button class="run-btn">▶ Run Full Pipeline</button><span class="demo-arrow-ic">↓</span></div>
+      <div class="demo-panel is-hidden" data-role="after"><div class="demo-panel-label">Final API response</div><pre><code></code></pre></div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 15 ================= -->
+  <section class="chapter" id="s15">
+    <div class="chapter-kicker"><span class="chapter-num">15</span><span class="stage-badge">mongoose</span></div>
+    <h2>The Mongoose Implementation</h2>
+    <p class="chapter-sub">The exact same pipeline, as real Node.js/Mongoose code.</p>
+
+    <div class="code-block">
+      <div class="code-block-head"><span class="lbl"><span class="dot-row"><span></span><span></span><span></span></span>messageController.js</span><button class="copy-btn" data-copy>copy</button></div>
+      <pre><code data-lang="js">const messages = await messageModel.aggregate([
+  {
+    $match: {
+      channel: channelId
+    }
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "author",
+      foreignField: "_id",
+      as: "author"
+    }
+  },
+  {
+    $unwind: "$author"
+  },
+  {
+    $project: {
+      content: 1,
+      createdAt: 1,
+      "author.username": 1,
+      "author.profile_pic": 1
+    }
+  },
+  {
+    $sort: {
+      createdAt: -1
+    }
+  },
+  {
+    $limit: 50
+  }
+]);</code></pre>
+    </div>
+
+    <h3>What MongoDB does, step by step</h3>
+    <ol style="color:var(--text-dim);padding-left:20px;">
+      <li style="margin:8px 0;"><code>$match</code> scans (or index-seeks) the <code>messages</code> collection and keeps only documents where <code>channel === channelId</code>.</li>
+      <li style="margin:8px 0;"><code>$lookup</code> runs, conceptually, a query against <code>users</code> for every surviving message: <code>users.find({ _id: message.author })</code>, and attaches the result array as <code>author</code>.</li>
+      <li style="margin:8px 0;"><code>$unwind</code> converts each message's single-item <code>author</code> array into a plain embedded object.</li>
+      <li style="margin:8px 0;"><code>$project</code> rebuilds every document to contain only <code>content</code>, <code>createdAt</code>, and two fields nested under <code>author</code> — everything else, including the full user document's other fields, is discarded before it ever leaves the database.</li>
+      <li style="margin:8px 0;"><code>$sort</code> orders the (now much smaller) documents by <code>createdAt</code> descending.</li>
+      <li style="margin:8px 0;"><code>$limit</code> cuts the stream off at the first 50 documents.</li>
+    </ol>
+
+    <div class="note"><div class="ic">◆</div><p>Notice this all happens as <strong>one</strong> round-trip to MongoDB, and the array coming back to your Express route handler is already shaped exactly the way the frontend wants to consume it — no post-processing loop needed in Node.js.</p></div>
+  </section>
+
+  <!-- ================= SECTION 16 ================= -->
+  <section class="chapter" id="s16">
+    <div class="chapter-kicker"><span class="chapter-num">16</span><span class="stage-badge">decision guide</span></div>
+    <h2>Aggregation vs populate()</h2>
+    <p class="chapter-sub">The question every backend developer eventually has to answer: which one, and when?</p>
+
+    <table class="data-table">
+      <thead><tr><th></th><th>populate()</th><th>$lookup</th><th>find()</th><th>aggregate()</th></tr></thead>
+      <tbody>
+        <tr><td>What it is</td><td>A Mongoose helper on top of extra queries</td><td>A native MongoDB pipeline stage</td><td>A native MongoDB query</td><td>A native MongoDB pipeline</td></tr>
+        <tr><td>Runs as</td><td>1 query + 1 extra query per referenced field</td><td>Part of one aggregation, in the database</td><td>1 query</td><td>1 pipeline execution</td></tr>
+        <tr><td>Can group / count / sum</td><td>No</td><td>Yes (combine with $group)</td><td>No</td><td>Yes</td></tr>
+        <tr><td>Reshape output</td><td>Limited (select fields per populate)</td><td>Fully, via later stages</td><td>Limited (projection)</td><td>Fully</td></tr>
+        <tr><td>Best for</td><td>Simple, small-scale reference loading</td><td>Joins as part of a bigger pipeline</td><td>Straightforward reads</td><td>Reporting, feeds, dashboards, joins + grouping</td></tr>
+      </tbody>
+    </table>
+
+    <h3>When should you actually choose each one?</h3>
+    <div class="grid-2">
+      <div class="card">
+        <h4 style="color:var(--accent);">Reach for populate()</h4>
+        <p style="margin:0;font-size:0.9rem;">Small result sets, one or two referenced fields, no grouping/counting needed, and you like Mongoose's simple, declarative API. Great for an admin panel showing a list of orders with the customer's name attached.</p>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--accent);">Reach for aggregate() + $lookup</h4>
+        <p style="margin:0;font-size:0.9rem;">You need to join <em>and</em> filter <em>and</em>/or group in one database round-trip — a message feed, a leaderboard, an analytics dashboard, anything where the shape of the response doesn't match any single collection's documents.</p>
+      </div>
+    </div>
+
+    <div class="warn-box"><div class="ic">▲</div><p><strong>The performance trap with populate():</strong> under the hood, <code>populate()</code> issues a <em>separate</em> query for each referenced document (or a batched query per referenced field) — it is not a database-level join. On a list of 1,000 messages, that can mean far more round-trips than a single <code>$lookup</code> inside one aggregation pipeline.</p></div>
+  </section>
+
+  <!-- ================= SECTION 17 ================= -->
+  <section class="chapter" id="s17">
+    <div class="chapter-kicker"><span class="chapter-num">17</span><span class="stage-badge">performance</span></div>
+    <h2>Performance</h2>
+    <p class="chapter-sub">Aggregation is powerful, but every stage you add is real work MongoDB has to do.</p>
+
+    <h3>$match early, always</h3>
+    <p>Covered in section 5, worth repeating here: a <code>$match</code> at the start of the pipeline can use an index and shrinks everything downstream. The same filter placed after a <code>$lookup</code> or <code>$group</code> can't use an index and has already paid the cost of processing documents it's about to throw away.</p>
+
+    <h3>Indexes</h3>
+    <p>Index the fields your early <code>$match</code> and <code>$sort</code> stages use — for the Discord example, an index on <code>{ channel: 1, createdAt: -1 }</code> lets MongoDB both filter <em>and</em> sort using the same index, without an extra in-memory sort step.</p>
+
+    <h3>Sorting</h3>
+    <p>Sorting large, unindexed result sets is memory-expensive — MongoDB has a default in-memory sort limit (100MB) and will error out or need to spill to disk beyond it. Sort on indexed fields, and sort as early as reasonably possible, ideally on a field that's already been filtered down.</p>
+
+    <h3>Pagination</h3>
+    <p><code>$skip</code> on a large offset is slow — MongoDB still has to walk past every skipped document. For deep pagination (e.g. an infinite-scroll feed), prefer <strong>cursor-based pagination</strong>: <code>$match</code> on <code>createdAt: { $lt: lastSeenTimestamp }</code> instead of an ever-growing <code>$skip</code>.</p>
+
+    <h3>Avoiding unnecessary $lookup</h3>
+    <p>Every <code>$lookup</code> is effectively a per-document query against another collection. Don't join data you're not going to use — if the frontend only needs <code>username</code>, don't <code>$lookup</code> the entire user document and then <code>$project</code> it away afterward; some drivers let you narrow a <code>$lookup</code> with a <code>pipeline</code> option so it never fetches the extra fields in the first place.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
+      <tbody>
+        <tr><td>Pipeline is slow on a large collection</td><td>$match placed late, or matching on an unindexed field</td></tr>
+        <tr><td>Sort step fails or is slow</td><td>Sorting on a non-indexed field, or sorting before filtering</td></tr>
+        <tr><td>Feed gets slower the further the user scrolls</td><td>Offset-based $skip pagination instead of cursor-based</td></tr>
+        <tr><td>High memory / CPU on the DB during aggregation</td><td>Unnecessary $lookup joins, or joining before filtering</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ================= SECTION 18 ================= -->
+  <section class="chapter" id="s18">
+    <div class="chapter-kicker"><span class="chapter-num">18</span><span class="stage-badge">mistakes</span></div>
+    <h2>Common Mistakes</h2>
+    <p class="chapter-sub">Nearly every developer hits these at least once — better to recognize them here first.</p>
+
+    <ul class="check-list">
+      <li><strong>Wrong collection name in $lookup's <code>from</code>.</strong> It must be the actual MongoDB collection name (usually your model name, lowercased and pluralized) — not the Mongoose model variable.</li>
+      <li><strong>Wrong localField / foreignField.</strong> Mixing these up silently returns an empty array for <code>as</code> instead of throwing an error, which makes it easy to miss.</li>
+      <li><strong>Forgetting $unwind after a one-to-one $lookup.</strong> The frontend receives <code>author: [{...}]</code> instead of <code>author: {...}</code>.</li>
+      <li><strong>Putting $match too late in the pipeline.</strong> Every earlier stage does unnecessary work on documents that get filtered out anyway.</li>
+      <li><strong>Returning unnecessary fields.</strong> Skipping <code>$project</code> means sending the full joined documents — including fields the frontend never uses — over the network.</li>
+      <li><strong>Aggregating huge collections without indexes.</strong> A pipeline that's fast on 100 test documents can be catastrophically slow on 10 million real ones without the right indexes backing $match and $sort.</li>
+      <li><strong>Confusing aggregation with populate().</strong> Trying to use populate() syntax/options inside an aggregation pipeline, or expecting $lookup to behave like a Mongoose populate() call (it doesn't apply schema virtuals, for instance).</li>
+      <li><strong>Reaching for aggregation when a simple find() is enough.</strong> If you're not joining, grouping, or reshaping, a plain <code>find()</code> with a projection is simpler, more readable, and easier to optimize.</li>
+    </ul>
+  </section>
+
+  <!-- ================= SECTION 19 ================= -->
+  <section class="chapter" id="s19">
+    <div class="chapter-kicker"><span class="chapter-num">19</span><span class="stage-badge">practice</span></div>
+    <h2>Mini Challenges</h2>
+    <p class="chapter-sub">Predict the output before you click. The answer is computed live, not pre-written.</p>
+
+    <div class="challenge" data-challenge data-before='DATA:messages' data-stage='{"$match":{"channel":"c2"}}'>
+      <div class="challenge-q">1. What does this $match return, given our 6 sample messages?</div>
+      <div class="code-block"><pre style="margin:0;padding:12px;"><code data-lang="js">{ $match: { channel: "c2" } }</code></pre></div>
+      <button class="reveal-btn">Show Answer</button>
+      <div class="challenge-answer"><div class="verdict">Result:</div><pre style="margin:0;"><code class="answer-code"></code></pre></div>
+    </div>
+
+    <div class="challenge" data-challenge data-before='DATA:lookedUp' data-stage='{"$unwind":"$author"}'>
+      <div class="challenge-q">2. After a $lookup, this document has <code>author: [{"_id":"u1","username":"Ritik",...}]</code>. What does $unwind: "$author" do to it?</div>
+      <div class="code-block"><pre style="margin:0;padding:12px;"><code data-lang="js">{ $unwind: "$author" }</code></pre></div>
+      <button class="reveal-btn">Show Answer</button>
+      <div class="challenge-answer"><div class="verdict">Result:</div><pre style="margin:0;"><code class="answer-code"></code></pre></div>
+    </div>
+
+    <div class="challenge" data-challenge data-before='DATA:messages' data-stage='{"$group":{"_id":"$author","total":{"$sum":1}}}'>
+      <div class="challenge-q">3. How many messages does each user have, after this $group?</div>
+      <div class="code-block"><pre style="margin:0;padding:12px;"><code data-lang="js">{ $group: { _id: "$author", total: { $sum: 1 } } }</code></pre></div>
+      <button class="reveal-btn">Show Answer</button>
+      <div class="challenge-answer"><div class="verdict">Result:</div><pre style="margin:0;"><code class="answer-code"></code></pre></div>
+    </div>
+
+    <div class="challenge" data-challenge data-before='DATA:messages' data-stage='{"$project":{"content":1,"_id":0}}'>
+      <div class="challenge-q">4. What fields does this $project remove?</div>
+      <div class="code-block"><pre style="margin:0;padding:12px;"><code data-lang="js">{ $project: { content: 1, _id: 0 } }</code></pre></div>
+      <button class="reveal-btn">Show Answer</button>
+      <div class="challenge-answer"><div class="verdict">Result:</div><pre style="margin:0;"><code class="answer-code"></code></pre></div>
+    </div>
+
+    <div class="challenge" data-challenge data-before='DATA:messages' data-chain='[{"$match":{"channel":"c1"}},{"$lookup":{"from":"users","localField":"author","foreignField":"_id","as":"author"}},{"$unwind":"$author"},{"$project":{"_id":0,"content":1,"author.username":1}}]'>
+      <div class="challenge-q">5. What is the final result of this complete mini pipeline?</div>
+      <div class="code-block"><pre style="margin:0;padding:12px;"><code data-lang="js">[
+  { $match: { channel: "c1" } },
+  { $lookup: { from: "users", localField: "author", foreignField: "_id", as: "author" } },
+  { $unwind: "$author" },
+  { $project: { _id: 0, content: 1, "author.username": 1 } }
+]</code></pre></div>
+      <button class="reveal-btn">Show Answer</button>
+      <div class="challenge-answer"><div class="verdict">Result:</div><pre style="margin:0;"><code class="answer-code"></code></pre></div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 20 ================= -->
+  <section class="chapter" id="s20">
+    <div class="chapter-kicker"><span class="chapter-num">20</span><span class="stage-badge">reference</span></div>
+    <h2>Cheat Sheet</h2>
+    <p class="chapter-sub">Every stage covered in this course, at a glance.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Stage</th><th>Purpose</th><th>Example</th><th>Common use</th></tr></thead>
+      <tbody>
+        <tr><td><span class="stage-badge">$match</span></td><td>Filter documents</td><td><code>{ $match: { channel: "c1" } }</code></td><td>Narrowing down early, using indexes</td></tr>
+        <tr><td><span class="stage-badge">$lookup</span></td><td>Join another collection</td><td><code>{ $lookup: { from:"users", localField:"author", foreignField:"_id", as:"author" } }</code></td><td>Attaching a related document</td></tr>
+        <tr><td><span class="stage-badge">$unwind</span></td><td>Flatten an array field</td><td><code>{ $unwind: "$author" }</code></td><td>Turning a $lookup array into an object</td></tr>
+        <tr><td><span class="stage-badge">$project</span></td><td>Choose / rename / compute fields</td><td><code>{ $project: { content:1, "author.username":1 } }</code></td><td>Shaping the final API response</td></tr>
+        <tr><td><span class="stage-badge">$sort</span></td><td>Order documents</td><td><code>{ $sort: { createdAt: -1 } }</code></td><td>Newest-first feeds</td></tr>
+        <tr><td><span class="stage-badge">$limit</span></td><td>Cap the number of documents</td><td><code>{ $limit: 50 }</code></td><td>Pagination, top-N lists</td></tr>
+        <tr><td><span class="stage-badge">$skip</span></td><td>Skip the first N documents</td><td><code>{ $skip: 20 }</code></td><td>Offset-based pagination</td></tr>
+        <tr><td><span class="stage-badge">$group</span></td><td>Summarize by a key</td><td><code>{ $group: { _id:"$author", total:{$sum:1} } }</code></td><td>Counts, sums, leaderboards</td></tr>
+        <tr><td><span class="stage-badge">$count</span></td><td>Count the pipeline's output</td><td><code>{ $count: "total" }</code></td><td>Total-result counts for pagination UI</td></tr>
+        <tr><td><span class="stage-badge">$set</span></td><td>Add/overwrite fields, keep the rest</td><td><code>{ $set: { wordCount: 12 } }</code></td><td>Computed fields alongside originals</td></tr>
+        <tr><td><span class="stage-badge">$facet</span></td><td>Run parallel sub-pipelines</td><td><code>{ $facet: { results:[...], totalCount:[...] } }</code></td><td>Results + total count in one call</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ================= SECTION 21 ================= -->
+  <section class="chapter" id="s21">
+    <div class="chapter-kicker"><span class="chapter-num">21</span><span class="stage-badge">closing</span></div>
+    <h2>Final Mental Model</h2>
+    <p class="chapter-sub">Everything in this course collapses into one sentence.</p>
+
+    <div class="definition-box" style="margin:20px 0 28px;">
+      <p>Aggregation is a data transformation pipeline.</p>
+    </div>
+
+    <div class="flow-diagram">
+      <div class="flow-node is-start"><div class="fn-label">Raw Docs</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Filter</div><div class="fn-sub">$match</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Join</div><div class="fn-sub">$lookup</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Flatten</div><div class="fn-sub">$unwind</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Transform</div><div class="fn-sub">$project</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Sort</div><div class="fn-sub">$sort</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node"><div class="fn-label">Limit</div><div class="fn-sub">$limit</div></div>
+      <div class="flow-arrow"><svg viewBox="0 0 40 14"><path d="M0 7h32"/><polygon points="32,2 40,7 32,12"/></svg></div>
+      <div class="flow-node is-end"><div class="fn-label">API Response</div></div>
+    </div>
+
+    <p>Every one of the 20+ operators in this course exists to do one of a small handful of jobs: keep some documents and drop others, reshape a document, bring in related data, collapse many documents into fewer, or put things in an order. Once you can look at any pipeline and label each stage with one of those five jobs, you can read — and write — aggregation pipelines you've never seen before.</p>
+  </section>
+
+  <div class="page-footer">
+    Built as an interactive single-page course · sample data is a tiny in-browser Discord-style dataset · all pipeline results on this page are computed live by a small JavaScript aggregation engine, not hard-coded.
+  </div>
+
+</div>
+</main>
+
+<script>
+/* ============================================================
+   SAMPLE DATA
+============================================================ */
+const messages = [
+  { _id: "m1", content: "Hello everyone", author: "u1", channel: "c1", createdAt: "2024-01-01T10:00:00Z" },
+  { _id: "m2", content: "Welcome!", author: "u2", channel: "c1", createdAt: "2024-01-01T10:05:00Z" },
+  { _id: "m3", content: "Let's build this", author: "u1", channel: "c2", createdAt: "2024-01-01T10:10:00Z" },
+  { _id: "m4", content: "Anyone free for a call?", author: "u2", channel: "c2", createdAt: "2024-01-01T10:15:00Z" },
+  { _id: "m5", content: "Pushed the first commit", author: "u1", channel: "c1", createdAt: "2024-01-01T10:20:00Z" },
+  { _id: "m6", content: "Looks great!", author: "u2", channel: "c1", createdAt: "2024-01-01T10:25:00Z" }
+];
+const users = [
+  { _id: "u1", username: "Ritik", profile_pic: "ritik.jpg" },
+  { _id: "u2", username: "Rahul", profile_pic: "rahul.jpg" }
+];
+const collections = { messages, users };
+
+/* ============================================================
+   MINI AGGREGATION ENGINE (simplified, for teaching purposes)
+============================================================ */
+function getPath(obj, path) {
+  if (obj == null) return undefined;
+  return path.split(".").reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);
+}
+function setPath(obj, path, value) {
+  const parts = path.split(".");
+  let cur = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (typeof cur[parts[i]] !== "object" || cur[parts[i]] === null) cur[parts[i]] = {};
+    cur = cur[parts[i]];
+  }
+  cur[parts[parts.length - 1]] = value;
+}
+function deletePath(obj, path) {
+  const parts = path.split(".");
+  let cur = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (cur[parts[i]] == null) return;
+    cur = cur[parts[i]];
+  }
+  delete cur[parts[parts.length - 1]];
+}
+function resolveExpr(expr, doc) {
+  if (typeof expr === "string" && expr.startsWith("$")) return getPath(doc, expr.slice(1));
+  return expr;
+}
+function matchTest(doc, condition) {
+  return Object.entries(condition).every(([key, val]) => {
+    if (key === "$and") return val.every(c => matchTest(doc, c));
+    if (key === "$or") return val.some(c => matchTest(doc, c));
+    const docVal = getPath(doc, key);
+    if (val && typeof val === "object" && !Array.isArray(val)) {
+      return Object.entries(val).every(([op, opVal]) => {
+        switch (op) {
+          case "$eq": return docVal === opVal;
+          case "$ne": return docVal !== opVal;
+          case "$gt": return docVal > opVal;
+          case "$gte": return docVal >= opVal;
+          case "$lt": return docVal < opVal;
+          case "$lte": return docVal <= opVal;
+          case "$in": return opVal.includes(docVal);
+          default: return true;
+        }
+      });
+    }
+    return docVal === val;
+  });
+}
+function projectDoc(doc, spec) {
+  const keys = Object.keys(spec).filter(k => k !== "_id");
+  const isExclusionMode = keys.length > 0 && keys.every(k => spec[k] === 0);
+  if (isExclusionMode) {
+    const out = JSON.parse(JSON.stringify(doc));
+    keys.forEach(k => deletePath(out, k));
+    if (spec._id === 0) delete out._id;
+    return out;
+  }
+  const out = {};
+  if (spec._id !== 0) out._id = doc._id;
+  keys.forEach(k => {
+    const v = spec[k];
+    if (v === 1) setPath(out, k, getPath(doc, k));
+    else if (v === 0) { /* mixed exclusion, skip */ }
+    else if (typeof v === "string" && v.startsWith("$")) setPath(out, k, resolveExpr(v, doc));
+    else if (v && typeof v === "object") setPath(out, k, resolveExpr(JSON.stringify(v), doc));
+  });
+  return out;
+}
+function sortDocs(docs, spec) {
+  const entries = Object.entries(spec);
+  return docs.slice().sort((a, b) => {
+    for (const [key, dir] of entries) {
+      const av = getPath(a, key), bv = getPath(b, key);
+      if (av < bv) return dir === 1 ? -1 : 1;
+      if (av > bv) return dir === 1 ? 1 : -1;
+    }
+    return 0;
+  });
+}
+function lookupDocs(docs, spec) {
+  const foreign = collections[spec.from] || [];
+  return docs.map(doc => {
+    const localVal = getPath(doc, spec.localField);
+    const matches = foreign.filter(f => getPath(f, spec.foreignField) === localVal);
+    return { ...doc, [spec.as]: matches };
+  });
+}
+function unwindDocs(docs, pathSpec) {
+  const path = (typeof pathSpec === "string" ? pathSpec : pathSpec.path).replace(/^\$/, "");
+  const out = [];
+  docs.forEach(doc => {
+    const arr = getPath(doc, path);
+    if (Array.isArray(arr) && arr.length) {
+      arr.forEach(item => {
+        const clone = JSON.parse(JSON.stringify(doc));
+        setPath(clone, path, item);
+        out.push(clone);
+      });
+    } else if (!Array.isArray(arr)) {
+      out.push(doc);
+    }
+  });
+  return out;
+}
+function computeAccumulator(op, val, docs) {
+  const vals = docs.map(d => resolveExpr(val, d));
+  switch (op) {
+    case "$sum": return typeof val === "number" ? val * docs.length : vals.reduce((a, b) => a + (Number(b) || 0), 0);
+    case "$avg": { const nums = vals.map(Number); return nums.reduce((a, b) => a + b, 0) / (nums.length || 1); }
+    case "$min": return vals.reduce((a, b) => (b < a ? b : a));
+    case "$max": return vals.reduce((a, b) => (b > a ? b : a));
+    case "$push": return vals;
+    case "$addToSet": return [...new Set(vals)];
+    default: return null;
+  }
+}
+function groupDocs(docs, spec) {
+  const idExpr = spec._id;
+  const groups = new Map();
+  docs.forEach(doc => {
+    const key = idExpr === null ? null : resolveExpr(idExpr, doc);
+    const keyStr = JSON.stringify(key);
+    if (!groups.has(keyStr)) groups.set(keyStr, { idVal: key, docs: [] });
+    groups.get(keyStr).docs.push(doc);
+  });
+  const out = [];
+  groups.forEach(g => {
+    const row = { _id: g.idVal };
+    Object.entries(spec).forEach(([k, v]) => {
+      if (k === "_id") return;
+      const opKey = Object.keys(v)[0];
+      row[k] = computeAccumulator(opKey, v[opKey], g.docs);
+    });
+    out.push(row);
+  });
+  return out;
+}
+function addFieldsDocs(docs, spec) {
+  return docs.map(doc => {
+    const clone = JSON.parse(JSON.stringify(doc));
+    Object.entries(spec).forEach(([k, v]) => setPath(clone, k, resolveExpr(v, doc)));
+    return clone;
+  });
+}
+function unsetDocs(docs, fields) {
+  const list = Array.isArray(fields) ? fields : [fields];
+  return docs.map(doc => {
+    const clone = JSON.parse(JSON.stringify(doc));
+    list.forEach(f => deletePath(clone, f));
+    return clone;
+  });
+}
+function runStage(docs, stageObj) {
+  const key = Object.keys(stageObj)[0];
+  const val = stageObj[key];
+  switch (key) {
+    case "$match": return docs.filter(d => matchTest(d, val));
+    case "$project": return docs.map(d => projectDoc(d, val));
+    case "$sort": return sortDocs(docs, val);
+    case "$limit": return docs.slice(0, val);
+    case "$skip": return docs.slice(val);
+    case "$lookup": return lookupDocs(docs, val);
+    case "$unwind": return unwindDocs(docs, val);
+    case "$group": return groupDocs(docs, val);
+    case "$count": return [{ [val]: docs.length }];
+    case "$addFields": case "$set": return addFieldsDocs(docs, val);
+    case "$unset": return unsetDocs(docs, val);
+    default: return docs;
+  }
+}
+const DATA_SOURCES = {
+  messages: messages,
+  lookedUp: lookupDocs(messages, { from: "users", localField: "author", foreignField: "_id", as: "author" })
+};
+function resolveBefore(str) {
+  if (str.startsWith("DATA:")) return JSON.parse(JSON.stringify(DATA_SOURCES[str.slice(5)]));
+  return JSON.parse(str);
+}
+
+/* ============================================================
+   CODE HIGHLIGHTING
+============================================================ */
+function highlightCode(raw) {
+  const esc = raw.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const pattern = /(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|(\$[A-Za-z_][A-Za-z0-9_]*)|(\b(?:const|let|var|async|await|function|return|new|require|module|exports|if|else|for|of|in|true|false|null|undefined|this|import|from|export|default)\b)/gm;
+  return esc.replace(pattern, (m, comment, str, num, dollar, kw) => {
+    if (comment) return `<span class="tok-comment">${m}</span>`;
+    if (str) return `<span class="tok-string">${m}</span>`;
+    if (num) return `<span class="tok-number">${m}</span>`;
+    if (dollar) return `<span class="tok-op">${m}</span>`;
+    if (kw) return `<span class="tok-keyword">${m}</span>`;
+    return m;
+  });
+}
+function renderCode(el, obj) {
+  const text = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+  el.textContent = text;
+  el.innerHTML = highlightCode(el.textContent);
+}
+function highlightStatic() {
+  document.querySelectorAll("code[data-lang]:not([data-rendered])").forEach(el => {
+    el.setAttribute("data-rendered", "1");
+    el.innerHTML = highlightCode(el.textContent);
+  });
+}
+
+/* ============================================================
+   COPY BUTTONS
+============================================================ */
+function setupCopyButtons() {
+  document.querySelectorAll(".copy-btn[data-copy], .copy-btn").forEach(btn => {
+    if (btn.dataset.wired) return;
+    btn.dataset.wired = "1";
+    btn.addEventListener("click", () => {
+      const block = btn.closest(".code-block");
+      const codeEl = block ? block.querySelector("code") : null;
+      if (!codeEl) return;
+      navigator.clipboard.writeText(codeEl.textContent).then(() => {
+        const original = btn.textContent;
+        btn.textContent = "copied!";
+        setTimeout(() => (btn.textContent = original), 1200);
+      });
+    });
+  });
+}
+
+/* ============================================================
+   STAGE DEMOS (before/after, optional chain)
+============================================================ */
+function setupStageDemos() {
+  document.querySelectorAll(".stage-demo").forEach(el => {
+    const before = resolveBefore(el.dataset.before);
+    let after;
+    if (el.dataset.chain) {
+      const chain = JSON.parse(el.dataset.chain);
+      after = chain.reduce((acc, stage) => runStage(acc, stage), JSON.parse(JSON.stringify(before)));
+    } else {
+      const stage = JSON.parse(el.dataset.stage);
+      after = runStage(JSON.parse(JSON.stringify(before)), stage);
+    }
+    renderCode(el.querySelector('[data-role="before"] code'), before);
+    renderCode(el.querySelector('[data-role="after"] code'), after);
+    const btn = el.querySelector(".run-btn");
+    btn.addEventListener("click", () => {
+      el.querySelector('[data-role="after"]').classList.remove("is-hidden");
+      el.classList.add("is-run");
+      btn.textContent = "✓ Ran";
+      btn.disabled = true;
+    });
+  });
+}
+
+/* ============================================================
+   CHALLENGES
+============================================================ */
+function setupChallenges() {
+  document.querySelectorAll("[data-challenge]").forEach(el => {
+    const before = resolveBefore(el.dataset.before);
+    let answer;
+    if (el.dataset.chain) {
+      const chain = JSON.parse(el.dataset.chain);
+      answer = chain.reduce((acc, stage) => runStage(acc, stage), JSON.parse(JSON.stringify(before)));
+    } else {
+      const stage = JSON.parse(el.dataset.stage);
+      answer = runStage(JSON.parse(JSON.stringify(before)), stage);
+    }
+    const answerCode = el.querySelector(".answer-code");
+    renderCode(answerCode, answer);
+    const btn = el.querySelector(".reveal-btn");
+    const panel = el.querySelector(".challenge-answer");
+    btn.addEventListener("click", () => {
+      panel.classList.toggle("shown");
+      btn.textContent = panel.classList.contains("shown") ? "Hide Answer" : "Show Answer";
+    });
+  });
+}
+
+/* ============================================================
+   EXPLAIN TABS
+============================================================ */
+function setupExplainTabs() {
+  document.querySelectorAll(".explain-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const group = btn.closest(".explain-tabs").dataset.tabs;
+      document.querySelectorAll(`.explain-tab-btn`).forEach(b => {
+        if (b.closest(".explain-tabs").dataset.tabs === group) b.classList.remove("active");
+      });
+      btn.classList.add("active");
+      document.querySelectorAll(`.explain-panel[data-group="${group}"]`).forEach(p => p.classList.remove("active"));
+      document.querySelector(`.explain-panel[data-panel="${btn.dataset.tab}"][data-group="${group}"]`).classList.add("active");
+    });
+  });
+}
+
+/* ============================================================
+   PLAYGROUND (section 4)
+============================================================ */
+const PLAYGROUND_STAGES = [
+  { name: "Collection", spec: null, blurb: "The raw messages collection — nothing has run yet." },
+  { name: "$match", spec: { $match: { channel: "c1" } }, blurb: "Keep only messages posted in channel c1." },
+  { name: "$lookup", spec: { $lookup: { from: "users", localField: "author", foreignField: "_id", as: "author" } }, blurb: "Attach the matching user document as an author array." },
+  { name: "$unwind", spec: { $unwind: "$author" }, blurb: "Flatten that single-item author array into a plain object." },
+  { name: "$project", spec: { $project: { _id: 0, content: 1, channel: 1, "author.username": 1 } }, blurb: "Keep only the fields the chat UI actually needs." }
+];
+function buildPlaygroundSteps() {
+  let cur = JSON.parse(JSON.stringify(messages));
+  const steps = [{ name: "Collection", input: null, output: cur, spec: null, blurb: PLAYGROUND_STAGES[0].blurb }];
+  for (let i = 1; i < PLAYGROUND_STAGES.length; i++) {
+    const s = PLAYGROUND_STAGES[i];
+    const input = cur;
+    cur = runStage(JSON.parse(JSON.stringify(cur)), s.spec);
+    steps.push({ name: s.name, input, output: cur, spec: s.spec, blurb: s.blurb });
+  }
+  return steps;
+}
+function setupPlayground() {
+  const stepsWrap = document.getElementById("pgSteps");
+  if (!stepsWrap) return;
+  renderCode(document.getElementById("rawMessages"), messages);
+  renderCode(document.getElementById("rawUsers"), users);
+  const steps = buildPlaygroundSteps();
+  steps.forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.className = "pg-step-btn";
+    btn.textContent = `${i}. ${s.name}`;
+    btn.addEventListener("click", () => showPlaygroundStep(i, steps));
+    stepsWrap.appendChild(btn);
+  });
+  showPlaygroundStep(0, steps);
+}
+function showPlaygroundStep(i, steps) {
+  const step = steps[i];
+  document.querySelectorAll(".pg-step-btn").forEach((b, idx) => b.classList.toggle("active", idx === i));
+  document.getElementById("pgBlurb").textContent = step.blurb;
+  renderCode(document.getElementById("pgInput"), step.input === null ? "— nothing yet, this is the source collection —" : step.input);
+  renderCode(document.getElementById("pgOutput"), step.output);
+  const opEl = document.getElementById("pgOp");
+  opEl.innerHTML = step.spec
+    ? `<code style="font-family:var(--font-mono);font-size:0.8rem;">${highlightCode(JSON.stringify(step.spec))}</code>`
+    : `<span style="color:var(--text-faint);">no operation — starting point</span>`;
+}
+
+/* ============================================================
+   SCROLLSPY + PROGRESS
+============================================================ */
+function setupScrollspy() {
+  const chapters = Array.from(document.querySelectorAll("section.chapter"));
+  const links = Array.from(document.querySelectorAll("#tocNav a"));
+  const progressBar = document.getElementById("progress-bar");
+  const progressFill = document.getElementById("progressFill");
+  const progressPct = document.getElementById("progressPct");
+  function onScroll() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? Math.min(100, Math.round((scrollTop / docHeight) * 100)) : 0;
+    progressBar.style.width = pct + "%";
+    progressFill.style.width = pct + "%";
+    progressPct.textContent = pct + "%";
+    let activeId = chapters[0] ? chapters[0].id : null;
+    for (const ch of chapters) {
+      if (ch.getBoundingClientRect().top - 100 <= 0) activeId = ch.id;
+    }
+    links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + activeId));
+  }
+  document.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+}
+
+/* ============================================================
+   MOBILE SIDEBAR
+============================================================ */
+function setupMobileSidebar() {
+  const toggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const backdrop = document.getElementById("sidebarBackdrop");
+  function close() { sidebar.classList.remove("open"); backdrop.classList.remove("show"); }
+  toggle.addEventListener("click", () => { sidebar.classList.add("open"); backdrop.classList.add("show"); });
+  backdrop.addEventListener("click", close);
+  sidebar.querySelectorAll("a").forEach(a => a.addEventListener("click", close));
+}
+
+/* ============================================================
+   INTRO FLOW ANIMATION (one-time, on load)
+============================================================ */
+function playIntroFlow() {
+  const el = document.getElementById("introFlow");
+  if (!el) return;
+  setTimeout(() => el.classList.add("is-lit"), 500);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  highlightStatic();
+  setupStageDemos();
+  setupChallenges();
+  setupExplainTabs();
+  setupPlayground();
+  setupCopyButtons();
+  setupScrollspy();
+  setupMobileSidebar();
+  playIntroFlow();
+});
+</script>
+</body>
+</html>
