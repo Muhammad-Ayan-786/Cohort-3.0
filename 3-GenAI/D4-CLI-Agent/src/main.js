@@ -12,9 +12,16 @@ async function main() {
     await saveApiKey(apiKey);
   }
 
-  const apiKey = await getApiKey();
-  console.log(apiKey);
+  const response = await getApiKey();
 
+  if (response.error) {
+    console.log("Invalid Or Expired API Key");
+    const apiKey = await rl.question("Please enter your API key: ");
+    await saveApiKey(apiKey);
+    return main();
+  }
+
+  const apiKey = response.apiKey;
 
   rl.close()
 
