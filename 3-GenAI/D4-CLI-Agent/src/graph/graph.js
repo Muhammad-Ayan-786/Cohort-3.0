@@ -29,11 +29,28 @@ export default async function initGraph() {
   while (true) {
     const userInput = await rl.question("[User]: ")
 
+    if (userInput.toLowerCase() === "/bye") {
+      rl.close()
+      break
+    }
+
+
     messages.push(new HumanMessage(userInput))
 
-    const response = await graph.invoke({
-      messages
-    });
+    /**
+     * @method invoke
+     * @param 1 - The state of the state graph
+     * @param 2 - The configuration
+     *  * description: Any data you want to read in a Node or a Tool
+     */
+    const response = await graph.invoke(
+      { messages },
+      {
+        context: {
+          username: "Mohd Ayan",
+        }
+      }
+    );
 
     messages = response.messages
   }

@@ -6,9 +6,12 @@ import { AIMessage } from "langchain";
 /**
  * Handles the LLM node logic for the state graph.
  * @param {Object} state - The current state of the state graph.
+ * @param {Object} config - The configuration for the LLM node.
  * @returns {Promise} - The update state after processing.
  */
-export async function LLMNode(state) {
+export async function LLMNode(state, config) {
+
+  // console.log(config); { username: 'Mohd Ayan' }
 
   const model = new ChatGroq({
     model: "openai/gpt-oss-120b",
@@ -36,7 +39,5 @@ export async function LLMNode(state) {
       new AIMessage(aiMessage)
     ]
   }
-
-
 
 }
