@@ -1,6 +1,8 @@
 import { ChatGroq } from "@langchain/groq";
-import { getApiKey } from "../utils/file.util.js";
+import { getApiKey } from "../../utils/file.util.js";
 import { AIMessage } from "langchain";
+import { upsertFileTool } from "../tools/file.tool.js";
+
 
 
 /**
@@ -19,7 +21,15 @@ export async function LLMNode(state, config) {
   })
 
 
-  const stream = await model.stream(state.messages);
+  // const agent = new createAgent({
+  //   model,
+  //   tools: [upsertFileTool]
+  // })
+  //* OR
+  const modelWithTool = model.bindTools([upsertFileTool]);
+
+
+  const stream = await modelWithTool.stream(state.messages);
 
   process.stdout.write("[Bot]: ");
 
@@ -28,6 +38,8 @@ export async function LLMNode(state, config) {
 
   for await (const chunk of stream) {
     process.stdout.write(chunk.text);
+    console.log(chunk);
+
     aiMessage += chunk.text;
   }
 

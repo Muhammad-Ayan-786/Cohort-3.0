@@ -1,4 +1,4 @@
-import initGraph from "./graph/graph.js";
+import initGraph from "./ai/graph/graph.js";
 import { getApiKey, getSettingsFile, saveApiKey } from "./utils/file.util.js";
 import rl from "./utils/readline.util.js";
 
