@@ -17,15 +17,16 @@ async function main() {
 
   if (response.error) {
     console.log("Invalid Or Expired API Key");
+
     const apiKey = await rl.question("Please enter your API key: ");
     await saveApiKey(apiKey);
+
     return main();
   }
 
   const apiKey = response.apiKey;
 
-
-  await initGraph()
+  await initGraph();
 
 
   rl.close()
