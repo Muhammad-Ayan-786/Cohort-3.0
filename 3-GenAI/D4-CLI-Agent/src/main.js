@@ -1,3 +1,4 @@
+import initGraph from "./graph/graph.js";
 import { getApiKey, getSettingsFile, saveApiKey } from "./utils/file.util.js";
 import rl from "./utils/readline.util.js";
 
@@ -22,6 +23,10 @@ async function main() {
   }
 
   const apiKey = response.apiKey;
+
+
+  await initGraph()
+
 
   rl.close()
 
